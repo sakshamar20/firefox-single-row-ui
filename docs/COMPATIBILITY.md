@@ -34,6 +34,9 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 - Collapsed security: actual HTTPS trust popup and granted-permission popup opened through pointer clicks while the strip stayed collapsed. HTTP Not Secure text plus a granted-permission indicator fit in 192px. New-tab generic favicon rendered at 16px, and search still expanded to 420px. Permissions were added only in the disposable test profile and then removed.
 - Drag repair: reproduced native dragstart/dragover with pointer actions. Before repair the row moved from y=7 to y=14.5 and non-dragged tab widths changed. After repair y stayed at 7 and widths stayed at 108px. The headless Mac driver did not deliver the OS drop event, so final edge dragover/drop handlers were invoked with the same live native DataTransfer; order changed from [0,1,2,3,4,5,6,7] to [1,2,3,4,5,6,7,0], drag state cleared and transform cleanup completed. This is not a full visual macOS drag-and-release certification, nor coverage of every pinned/grouped-tab case.
 
+- Compact-strip refinement: 96px with combined security controls, 120px in legacy layouts and 176px for HTTP warning text. Native site-info and permission popup checks passed; HTTP warning plus permission indicator fit; search still expanded to 420px.
+- Reorder replay removal: removed custom @starting-style and min/max-width transitions; near-instant 1ms native transform completion passed the same live-data native drop-handler check.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.

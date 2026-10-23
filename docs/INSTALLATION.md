@@ -37,7 +37,7 @@ The user settings at the top contain:
 }
 ```
 
-Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Collapsed mode preserves Firefox's connection/site-info, tracking, permissions and notification anchors. It reserves 128px, or 192px where the native Not Secure text needs room. Pending permission prompts temporarily expand it. Firefox controls which icons apply to the current page; the CSS does not invent a security status. Change `--uc-address-expanded-width` to adjust the expanded field; the layout limits oversized values to leave room for tabs and side controls. Fully quit/reopen Firefox after editing.
+Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Collapsed mode preserves Firefox's connection/site-info, tracking, permissions and notification anchors. It reserves 96px (120px in older layouts), or 176px where the native Not Secure text needs room. Pending permission prompts temporarily expand it. Firefox controls which icons apply to the current page; the CSS does not invent a security status. Change `--uc-address-expanded-width` to adjust the expanded field; the layout limits oversized values to leave room for tabs and side controls. Fully quit/reopen Firefox after editing.
 
 **Strictly closed on new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon or Command-L opens the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
 
@@ -53,14 +53,14 @@ Services.wm.getMostRecentWindow("navigator:browser").__ucSearchBehavior?.stop();
 
 The main custom properties are near the top of `userChrome.css`:
 
-- `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The default collapsed width is 128px for native security controls plus search (192px on HTTP warning pages); the reserved left region follows automatically.
+- `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The default collapsed width is 96px for native security controls plus search (176px on HTTP warning pages); the reserved left region follows automatically.
 - `--uc-row-height`: 44px.
 - `--uc-field-height`: 32px.
 - `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.
 
 Tabs have a 220px maximum and a 40px minimum. Above 140px titles use the native presentation. At 57–140px the favicon stays left, the close control hides to free space, and a lighter title fades from left to right. At 56px and below only centered favicons/status indicators remain. Media controls may retain additional room. In the two compact stages the close button is hidden; Command-W and the tab context menu remain available. Selection, native title tooltips, media controls and accessibility labels are retained.
 
-Opening/closing width transitions target 180ms and fades target 140ms. Reduced-motion preferences disable them. The title-to-icon change remains discrete.
+Tab entrance and width transitions are disabled so reordering does not replay a growing tab. Native drag completion uses a 1ms transform transition; reduced-motion mode disables it through the native reduced-motion path. The title-to-icon change remains discrete.
 
 The vertical list supplies 24 row positions for ordinary visible toolbar widgets. Keep long toolbars short enough to fit your screen; move excess widgets to Firefox's overflow menu. Specialized composite widgets can retain their own controls rather than a single caption.
 
