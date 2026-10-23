@@ -37,9 +37,9 @@ The user settings at the top contain:
 }
 ```
 
-Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Collapsed mode preserves Firefox's connection/site-info, tracking, permissions and notification anchors. It reserves 96px (120px in older layouts), or 176px where the native Not Secure text needs room. Pending permission prompts temporarily expand it. Firefox controls which icons apply to the current page; the CSS does not invent a security status. Change `--uc-address-expanded-width` to adjust the expanded field; the layout limits oversized values to leave room for tabs and side controls. Fully quit/reopen Firefox after editing.
+Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Collapsed mode preserves Firefox's connection/site-info, tracking, permissions and notification anchors. With `optional/search-behavior.js` running, it measures visible native controls and fits their combined width: search alone 36px, site information plus search 66px, one additional permission indicator 96px, two 126px. Warning text retains its measured width. CSS alone uses a safe 96px reserve (120px in older layouts), or 176px for native Not Secure text. Pending permission prompts temporarily expand it. Firefox controls which icons apply to the current page; the CSS does not invent a security status. Change `--uc-address-expanded-width` to adjust the expanded field; the layout limits oversized values to leave room for tabs and side controls. Fully quit/reopen Firefox after editing.
 
-**Strictly closed on new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon or Command-L opens the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
+**Dynamic sizing and strictly closed new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon or Command-L opens the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
 
 Without the helper the CSS idle toggle works, but automatic new-tab focus can still expand the field. The engine picker stays expanded while its menu is open. Focus outlines keep their native color and use the shared radius.
 
@@ -53,7 +53,7 @@ Services.wm.getMostRecentWindow("navigator:browser").__ucSearchBehavior?.stop();
 
 The main custom properties are near the top of `userChrome.css`:
 
-- `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The default collapsed width is 96px for native security controls plus search (176px on HTTP warning pages); the reserved left region follows automatically.
+- `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The CSS-only collapsed fallback is 96px (176px on HTTP warning pages); the session helper sizes it to the visible controls; the reserved left region follows automatically.
 - `--uc-row-height`: 44px.
 - `--uc-field-height`: 32px.
 - `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.

@@ -51,3 +51,5 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 - Native popup anchoring can be clamped by screen boundaries even with the optional centering helper.
 
 Firefox does not officially support profile UI stylesheets. See [Mozilla's customization notes](https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration).
+
+- Dynamic strip (1.4.3): search alone measured 36px, site info plus search 66px, one permission indicator 96px; a granted notification plus blocked location produced four glyphs at x=242, 272, 302, 332, all centered at y=22. Native site-info and permission popups opened; HTTP warning text fit; search expanded to 420px. Sizing requires the updated session helper.
