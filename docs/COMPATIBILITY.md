@@ -1,6 +1,6 @@
 # Compatibility and validation
 
-The project uses modern Firefox CSS nesting, `:has()`, container queries, `color-mix()`, `@starting-style`, and internal browser selectors. It is designed for macOS, LTR interfaces and horizontal tabs. The compact rules fall back to native layout for Customize Toolbar, vertical tabs, forced-colors mode, webpage fullscreen and windows below 1000 CSS pixels.
+The project uses the internal `-moz-pref()` media condition, modern Firefox CSS nesting, `:has()`, container queries, `color-mix()`, `@starting-style`, and internal browser selectors. It is designed for macOS, LTR interfaces and horizontal tabs. The compact rules fall back to native layout for Customize Toolbar, vertical tabs, forced-colors mode, webpage fullscreen and windows below 1000 CSS pixels.
 
 Validation used an isolated headless Firefox 158.0.1 instance. No active user profile was modified by those tests. This is not a compatibility guarantee for every release, ESR branch, fork or experimental Firefox design.
 
@@ -18,9 +18,13 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 - Search prompt visible only with an empty address field; typing removed it and preserved the input value.
 - Public sample captures rendered from the packaged stylesheet with neutral tabs.
 
+- Corner radius: native menu creation, preset commands at 0/4/8/12/16/24, live computed address/tab corners, Reset, helper removal, and a saved 7px value after restarting without loading the helper.
+- Custom value validation through the real menu command with a test prompt service: valid integers accepted; negative, fractional, out-of-range and nonnumeric values rejected; cancel preserved the value. The native macOS menu appearance was not captured by headless screenshots.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
+- The radius menu uses privileged Browser Console code. Its entries are session-only; the saved integer is read directly by CSS using an internal media condition verified on Firefox 158.0.1. Older releases may need a fixed `--uc-corner-radius` edit instead.
 - Firefox UI selectors and native services can change. The console helpers are session-only and depend on internal APIs.
 - Special toolbar widgets can differ from ordinary icon-and-label buttons. The vertical list supplies 24 row positions and is intended for a toolbar short enough to fit the screen.
 - Keyboard traversal follows Firefox's original DOM order, which can differ from the visual layout.

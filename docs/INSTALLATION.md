@@ -38,6 +38,27 @@ Opening/closing width transitions target 180ms and fades target 140ms. Reduced-m
 
 The vertical list supplies 24 row positions for ordinary visible toolbar widgets. Keep long toolbars short enough to fit your screen; move excess widgets to Firefox's overflow menu. Specialized composite widgets can retain their own controls rather than a single caption.
 
+## Corner radius
+
+The default is **8px**. To change it from a menu:
+
+1. Replace your installed `chrome/userChrome.css` with the updated file and fully quit/reopen Firefox.
+2. Follow the Browser Console helper steps below and run `optional/corner-radius-menu.js`.
+3. Right-click a tab or an empty toolbar area and choose **Corner radius**. You can also right-click the menu handle.
+4. Choose **Square (0px)**, **Subtle (4px)**, **Soft (8px)**, **Rounded (12px)**, **Very rounded (16px)**, **Pill (24px)**, or **Custom…**. Custom values are whole numbers from 0 to 24. Reset restores 8px.
+
+The change applies immediately to the address field, shared tab region, tab selection, close controls, toolbar button shapes and hover-action panel. Native macOS window corners, traffic lights, profile photos and system-drawn context menus keep their platform shapes. Other websites are unaffected.
+
+Your choice is saved in `userChrome.singleRow.cornerRadius` and applies after a restart, even without the helper. The menu is session-only: run the helper again after restarting to restore its menu entries. This project does not install a privileged startup loader.
+
+**Without the helper:** open `about:config`, search for `userChrome.singleRow.cornerRadius`, select **Number**, click **+**, and enter a whole number from 0 to 24. An existing Number preference can be edited directly. Delete/reset it to restore the 8px default. Values outside this range fall back to 8px. This preference is supplied by this stylesheet, not a built-in Firefox setting.
+
+To remove the menu during a session (the chosen radius remains saved):
+
+```js
+Services.wm.getMostRecentWindow("navigator:browser").__ucCornerRadiusMenu?.stop();
+```
+
 ## Fullscreen
 
 The compact row supports Firefox's fullscreen CSS state and reserves separate left and middle regions. Native toolbar auto-hide is left intact. Move the pointer to the top when toolbars are hidden. Webpage/video fullscreen keeps Firefox's native layout. A real macOS fullscreen/Spaces transition still needs checking on the specific machine and release.

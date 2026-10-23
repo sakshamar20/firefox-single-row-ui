@@ -17,3 +17,5 @@ No personal browsing history, account photograph, location, uploaded user screen
 ![Favicon-only tabs and native scrolling](../assets/screenshots/compact-tabs.png)
 
 To add your own screenshots, use a clean browser window, remove personal details, save the image in `assets/screenshots/`, and add a relative Markdown image link to the README. Native screenshot tools can capture only the toolbar to avoid including page content.
+
+The 1.1.0 captures use the 8px default. `radius-4.png` and `radius-16.png` show the same toolbar at two saved radius settings. Native macOS context menus are not rendered in headless screenshot output; these images demonstrate the changed corners rather than the menu itself.
