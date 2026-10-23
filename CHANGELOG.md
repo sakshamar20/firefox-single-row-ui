@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1
+
+- Add the numeric CSS idle-state toggle `--uc-search-default-open` (0 closed, 1 open).
+- Keep search expanded while the engine picker is open.
+- Match native focus outlines to the shared radius without removing focus indication.
+- Add an optional session helper for strict new-tab closure despite automatic address focus.
+
 ## 1.2.0
 
 - Collapse the native address field to a 32px search icon while browsing.

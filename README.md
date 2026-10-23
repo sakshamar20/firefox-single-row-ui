@@ -24,7 +24,7 @@ This project does not bundle a Firefox color theme. The colors in the examples c
 
 ### Collapsible search
 
-The native address field collapses to a search icon while you browse. Click it or press **Command-L** to expand it; it stays expanded while focused, while suggestions are open, or during search mode. Click back into the webpage to collapse it. Tabs automatically take the freed space. No JavaScript helper is needed.
+The native address field collapses to a search icon while you browse. Click it or press **Command-L** to expand it; it stays expanded while focused, while suggestions are open, or during search mode. Click back into the webpage to collapse it. Tabs automatically take the freed space. Set `--uc-search-default-open: 0` for closed while idle, or `1` for open while idle. For strict closed-by-default behavior on new tabs, run [`optional/search-behavior.js`](optional/search-behavior.js) using the Browser Console steps. It distinguishes automatic Firefox focus from your click, keyboard input or Command-L. The helper is session-only; CSS alone still expands when Firefox automatically focuses the field.
 
 ![Collapsed search icon gives tabs more room](assets/screenshots/search-collapsed.png)
 
