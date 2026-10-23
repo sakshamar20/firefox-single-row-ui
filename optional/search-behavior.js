@@ -76,11 +76,24 @@
       if (event.composedPath().includes(field)) expand();
       else close();
     }, true);
+    // macOS can consume clicks on draggable titlebar backgrounds. Mark only
+    // compact-strip backgrounds as no-drag while this helper is active.
+    // This stylesheet never changes dimensions or toolbar placement.
+    const clickSurfaceStyle = doc.createElementNS('http://www.w3.org/1999/xhtml', 'style');
+    clickSurfaceStyle.textContent = `@media (min-width: 1000px) and (not (forced-colors: active)) {
+      :root[uc-search-managed]:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr)
+      :is(#TabsToolbar-customization-target, #tabbrowser-tabs, #tabbrowser-arrowscrollbox,
+          #tabbrowser-arrowscrollbox-periphery, .closing-tabs-spacer) {
+        -moz-window-dragging: no-drag !important;
+      }
+    }`;
+    root.append(clickSurfaceStyle);
+    cleanups.push(() => clickSurfaceStyle.remove());
     // Only the unused strip AFTER the last visible tab acts as Search.
     // Native tabs, new-tab/list buttons, scroll arrows and drag gestures stay native.
     const strip = doc.getElementById('TabsToolbar-customization-target');
-    listen(strip, 'click', event => {
-      if (event.button !== 0 || event.detail !== 1 || event.ctrlKey || event.metaKey ||
+    listen(strip, 'pointerdown', event => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey ||
           event.altKey || event.shiftKey || win.getComputedStyle(doc.getElementById('navigator-toolbox')).display !== 'grid') return;
       if (event.composedPath().some(node => node.matches?.('.tabbrowser-tab, tab-group, .tab-group-label-container, toolbarbutton, button, [role=button], splitter, .scrollbutton-up, .scrollbutton-down'))) return;
       const area = strip.getBoundingClientRect();
@@ -90,9 +103,10 @@
       const end = Math.min(area.right, ...controls.map(r => r.left));
       if (event.clientX > lastRight && event.clientX < end && event.clientY >= area.top && event.clientY <= area.bottom) {
         event.preventDefault();
+        event.stopPropagation();
         focusSearch();
       }
-    });
+    }, true);
     // Native tab-list popup opens below the capsule, with its right edge
     // inside the capsule rather than projecting across the menu/profile buttons.
     const alignTabList = event => {
