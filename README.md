@@ -34,7 +34,7 @@ The native address field collapses to a search icon while you browse. Click it o
 
 ### Security while collapsed
 
-The collapsed strip reserves 128px for native site controls and search. HTTP connection warnings get 192px; a pending permission prompt expands the field. Firefox decides which icons are relevant, including whether security/tracking information uses a combined control. Click those native controls for site information, cookies/site-data actions and permissions.
+The collapsed strip reserves 96px for native site controls and search. HTTP connection warnings get 176px; a pending permission prompt expands the field. Older Firefox layouts with separate security icons reserve 120px. Firefox decides which icons are relevant, including whether security/tracking information uses a combined control. Click those native controls for site information, cookies/site-data actions and permissions.
 
 ![Native site-information icon and search remain visible while collapsed](assets/screenshots/collapsed-security.png)
 

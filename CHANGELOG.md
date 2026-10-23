@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1
+
+- Remove the entrance/width animation that can replay when a tab is reinserted during reorder.
+- Make native drag transforms near-instant while preserving the completion event.
+- Reduce the collapsed security strip to 96px and align controls with consistent padding and gaps.
+- Retain extra room for legacy security icons and HTTP warning text.
+
 ## 1.4.0
 
 - Show a neutral favicon on new tabs at every density.
