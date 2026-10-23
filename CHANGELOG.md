@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.4
+
+- Match search-menu highlight corners to the shared radius, including focused rows.
+- Give the inner search button a radius one pixel smaller, clamped at zero.
+- Verified 0, 1, 4, 16 and 24px settings and popup opening.
+
 ## 1.1.3
 
 - Make the search-engine dropdown panel and list follow the shared corner radius.
