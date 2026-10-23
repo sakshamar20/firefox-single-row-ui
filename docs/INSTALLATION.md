@@ -25,9 +25,25 @@ The built-in VPN button is hidden. Hiding the button does not disable an active 
 
 ## Collapsible search
 
-Click the search icon or press Command-L to expand the native address field. It stays expanded while focused, while the address suggestions are open, or during search mode. Click the webpage to return to the icon. A new tab may initially show the expanded field because Firefox focuses it for typing.
+Replace the installed `userChrome.css` with the current complete file; do not append another copy of an older collapsible-search section. Preserve your chosen `--uc-corner-radius` default when replacing it.
 
-The collapsed icon still uses the original address input, including its native keyboard access. Site-information and address actions are available after expanding. The CSS does not redirect searches or change the current page. No console helper is needed.
+The Search behavior section near the end contains:
+
+```css
+:root { --uc-search-default-open: 0; --uc-address-expanded-width: 260px; }
+```
+
+Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Fully quit/reopen Firefox after editing.
+
+**Strictly closed on new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon or Command-L opens the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
+
+Without the helper the CSS idle toggle works, but automatic new-tab focus can still expand the field. The engine picker stays expanded while its menu is open. Focus outlines keep their native color and use the shared radius.
+
+To remove the helper during a session:
+
+```js
+Services.wm.getMostRecentWindow("navigator:browser").__ucSearchBehavior?.stop();
+```
 
 ## Tuning
 
