@@ -41,6 +41,8 @@ Set `--uc-search-default-open` to **0** for closed while idle (default), or **1*
 
 **Dynamic sizing and strictly closed new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon, the empty strip to the right of the last tab, or Command-L opens and focuses the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
 
+**Empty strip click:** this requires the helper to be running. Copying its file into `chrome` is insufficient. The current helper focuses Search on primary mouse-down in unused space after the final tab and applies a temporary no-drag rule to that background for macOS. It does not change row geometry.
+
 The helper also aligns the native tab-list popup below the tab capsule, keeping its right edge inside the capsule. The CSS keeps the + and tab-list hover/pressed surfaces at 28px, vertically centered inside the 32px capsule.
 
 Without the helper the CSS idle toggle works, but automatic new-tab focus can still expand the field. The engine picker stays expanded while its menu is open. Focus outlines keep their native color and use the shared radius.
