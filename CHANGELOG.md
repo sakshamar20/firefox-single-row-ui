@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2
+
+- Align collapsed security, permission and search controls on a shared center line.
+- Use 28px targets, 16px icon artwork and 2px spacing with balanced horizontal padding.
+- Preserve native visibility and room for multi-indicator controls and warning text.
+
 ## 1.4.1
 
 - Remove the entrance/width animation that can replay when a tab is reinserted during reorder.

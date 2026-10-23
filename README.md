@@ -36,7 +36,9 @@ The native address field collapses to a search icon while you browse. Click it o
 
 The collapsed strip reserves 96px for native site controls and search. HTTP connection warnings get 176px; a pending permission prompt expands the field. Older Firefox layouts with separate security icons reserve 120px. Firefox decides which icons are relevant, including whether security/tracking information uses a combined control. Click those native controls for site information, cookies/site-data actions and permissions.
 
-![Native site-information icon and search remain visible while collapsed](assets/screenshots/collapsed-security.png)
+Native icons use centered 28px targets, 16px artwork and 2px spacing. Hidden native controls remain hidden, and multi-indicator controls can use their required width.
+
+![Aligned native site information, permission and search icons](assets/screenshots/aligned-security-icons.png)
 
 New tabs show a neutral favicon even when roomy:
 
