@@ -34,11 +34,13 @@ The native address field collapses to a search icon while you browse. Click it o
 
 ### Security while collapsed
 
-The collapsed strip reserves 96px for native site controls and search. HTTP connection warnings get 176px; a pending permission prompt expands the field. Older Firefox layouts with separate security icons reserve 120px. Firefox decides which icons are relevant, including whether security/tracking information uses a combined control. Click those native controls for site information, cookies/site-data actions and permissions.
+With the updated [`optional/search-behavior.js`](optional/search-behavior.js) helper running, the collapsed strip fits the visible native controls: 36px for search alone, 66px for site information plus search, 96px with one permission indicator, and 126px with two permission indicators. It responds to tab switches and permission changes. CSS-only installations reserve 96px for native site controls and search. HTTP connection warnings get 176px; a pending permission prompt expands the field. Older Firefox layouts with separate security icons reserve 120px. Firefox decides which icons are relevant, including whether security/tracking information uses a combined control. Click those native controls for site information, cookies/site-data actions and permissions.
 
-Native icons use centered 28px targets, 16px artwork and 2px spacing. Hidden native controls remain hidden, and multi-indicator controls can use their required width.
+Native icons use centered 28px targets, 16px artwork and 2px spacing (30px between icon centers), including indicators nested inside the permission button. Hidden native controls remain hidden, and multi-indicator controls can use their required width.
 
 ![Aligned native site information, permission and search icons](assets/screenshots/aligned-security-icons.png)
+
+![Dynamic strip with two native permission indicators](assets/screenshots/dynamic-security-icons.png)
 
 New tabs show a neutral favicon even when roomy:
 

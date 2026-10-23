@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.3
+
+- Measure visible native controls in the search-behavior helper and resize the collapsed strip on tab and permission changes.
+- Keep single and grouped permission indicators on a uniform 30px pitch.
+- Remove the empty site-identity spacer on pages without native identity controls.
+- Retain CSS-only fallback widths and native popup interactions.
+
 ## 1.4.2
 
 - Align collapsed security, permission and search controls on a shared center line.
