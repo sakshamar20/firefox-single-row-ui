@@ -31,6 +31,9 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 
 - Complete replacement with the 420px expanded field: tab and navigation rows both at y=0, no horizontal page overflow at 1440px and 1000px, native engine picker stayed open, idle toggle and typed text retained, focus-corner checks passed, and 32-tab native overflow remained available. The reported two-row screenshot was not reproduced with the packaged full stylesheet; the installed local file/version was not available for comparison.
 
+- Collapsed security: actual HTTPS trust popup and granted-permission popup opened through pointer clicks while the strip stayed collapsed. HTTP Not Secure text plus a granted-permission indicator fit in 192px. New-tab generic favicon rendered at 16px, and search still expanded to 420px. Permissions were added only in the disposable test profile and then removed.
+- Drag repair: reproduced native dragstart/dragover with pointer actions. Before repair the row moved from y=7 to y=14.5 and non-dragged tab widths changed. After repair y stayed at 7 and widths stayed at 108px. The headless Mac driver did not deliver the OS drop event, so final edge dragover/drop handlers were invoked with the same live native DataTransfer; order changed from [0,1,2,3,4,5,6,7] to [1,2,3,4,5,6,7,0], drag state cleared and transform cleanup completed. This is not a full visual macOS drag-and-release certification, nor coverage of every pinned/grouped-tab case.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
