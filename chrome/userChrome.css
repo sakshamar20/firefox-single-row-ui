@@ -548,3 +548,15 @@
   @media -moz-pref("userChrome.singleRow.cornerRadius", 23) { :root { --uc-corner-radius: 23px !important; } }
   @media -moz-pref("userChrome.singleRow.cornerRadius", 24) { :root { --uc-corner-radius: 24px !important; } }
 }
+
+/* Search-engine dropdown: Firefox paints the popup separately. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  #urlbar .searchmode-switcher-panel,
+  #urlbar .searchmode-switcher-panel-list {
+    --panel-border-radius: var(--uc-corner-radius, 16px) !important;
+    --panel-list-border-radius: var(--uc-corner-radius, 16px) !important;
+  }
+  #urlbar .searchmode-switcher-panel-list {
+    border-radius: var(--uc-corner-radius, 16px) !important;
+  }
+}
