@@ -1,0 +1,35 @@
+name: Layout problem
+description: Report a Firefox toolbar or tab-layout issue.
+title: "[Layout]: "
+body:
+  - type: input
+    id: firefox
+    attributes:
+      label: Firefox version
+      placeholder: "158.0.1, ESR version, or Nightly build"
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+    validations:
+      required: true
+  - type: dropdown
+    id: window
+    attributes:
+      label: Window mode
+      options:
+        - Normal window
+        - macOS fullscreen
+        - Webpage/video fullscreen
+        - Customize Toolbar
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include your theme, toolbar widgets, other CSS and steps to reproduce. Remove personal details from screenshots.
+    validations:
+      required: true
