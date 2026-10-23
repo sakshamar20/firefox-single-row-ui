@@ -7,6 +7,8 @@
  * fullscreen. Theme colors, native tab scrolling and panel anchors retained.
  */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root { --uc-corner-radius: 8px; }
+
   /* These preferences apply in both the compact and fallback layouts. */
   :root:not([customizing]) #ipprotection-button {
     display: none !important; /* Hides the button; does not disable VPN. */
@@ -32,7 +34,8 @@
       --uc-field-height: 32px;
       --uc-button-size: 32px;
       --uc-traffic-space: 84px;
-      --uc-capsule-radius: 16px;
+      --uc-capsule-radius: var(--uc-corner-radius);
+      --toolbarbutton-border-radius: var(--uc-corner-radius) !important;
       --tab-min-height: 30px !important;
       --tab-margin-block: 0px !important;
 
@@ -96,7 +99,7 @@
         --tab-min-height: 30px !important;
         --tab-margin-block: 0px !important;
         --tab-strip-padding: 0px !important;
-        --tab-border-radius: 0px !important;
+        --tab-border-radius: var(--uc-corner-radius) !important;
       }
       #tabbrowser-tabs {
         min-width: 0 !important;
@@ -162,7 +165,7 @@
         min-height: 30px !important;
         margin-block: 0 !important;
         border: 0 !important;
-        border-radius: 14px !important;
+        border-radius: var(--uc-corner-radius) !important;
         outline: none !important;
         box-shadow: none !important;
       }
@@ -170,7 +173,7 @@
        * Inactive tabs are not separate pills. Theme selection fill stays. */
       #tabbrowser-tabs .tabbrowser-tab:is([visuallyselected], [multiselected]) .tab-background {
         background: color-mix(in srgb, currentColor 12%, transparent) !important;
-        border-radius: 14px !important;
+        border-radius: var(--uc-corner-radius) !important;
         box-shadow: inset 0 0 0 1px var(--lwt-tab-line-color, var(--focus-outline-color, currentColor)) !important;
       }
       #tabbrowser-tabs .tabbrowser-tab:focus-visible .tab-content {
@@ -185,14 +188,14 @@
         --toolbarbutton-inner-padding: 6px !important;
       }
       #TabsToolbar :is(#tabs-newtab-button, #new-tab-button, #alltabs-button) > .toolbarbutton-icon {
-        border-radius: 14px !important;
+        border-radius: var(--uc-corner-radius) !important;
       }
 
       #nav-bar {
         z-index: 15 !important;
         pointer-events: none !important;
         overflow: visible !important;
-        border-radius: 18px !important;
+        border-radius: var(--uc-corner-radius) !important;
         grid-area: 1 / 3 !important;
         width: max-content !important;
         max-width: none !important;
@@ -230,7 +233,7 @@
         right: 8px;
         width: 240px;
         height: calc(var(--uc-action-count) * 36px + 8px);
-        border-radius: 12px;
+        border-radius: var(--uc-corner-radius);
         background: var(--toolbar-bgcolor, Canvas);
         box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 18%, transparent), 0 4px 12px #00000028;
         visibility: hidden;
@@ -254,7 +257,8 @@
         z-index: 4 !important;
         -moz-window-dragging: no-drag !important;
       }
-      #urlbar-background, #searchbar {
+      #urlbar-background, #urlbar .urlbar-background, #searchbar,
+      #urlbar-searchmode-switcher, #identity-icon-box {
         border-radius: var(--uc-capsule-radius) !important;
       }
       #urlbar-container { pointer-events: auto !important; }
@@ -337,7 +341,7 @@
         margin: 0 !important;
         padding: 4px 8px !important;
         justify-content: flex-start !important;
-        border-radius: 8px !important;
+        border-radius: var(--uc-corner-radius) !important;
         z-index: 1 !important;
       }
       #nav-bar-customization-target:has(> :nth-child(1 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 1; }
@@ -407,7 +411,7 @@
       }
       #fxa-toolbar-menu-button .toolbarbutton-text { display: none !important; }
       #tabbrowser-tabs .tab-close-button {
-        border-radius: 50% !important;
+        border-radius: min(var(--uc-corner-radius), 10px) !important;
         width: 20px !important;
         height: 20px !important;
         padding: 4px !important;
@@ -430,6 +434,7 @@
       /* Internal card alignment only. Native popup anchoring is controlled
        * by Firefox's tab-hover-preview.mjs, not this stylesheet. */
       #tab-preview-panel {
+        --panel-border-radius: var(--uc-corner-radius);
         --panel-width: 280px;
         --panel-padding: 0;
       }
@@ -475,14 +480,14 @@
         background: color-mix(in srgb, currentColor 8%, transparent) !important;
       }
       #tabbrowser-tabs .tabbrowser-tab {
-        border-radius: 14px !important;
+        border-radius: var(--uc-corner-radius) !important;
       }
       #nav-bar :is(#back-button, #forward-button, #reload-button, #stop-button, #sidebar-button) {
         --toolbarbutton-inner-padding: 6px !important;
       }
       #nav-bar .toolbarbutton-1 > .toolbarbutton-icon,
       #nav-bar .toolbarbutton-1 > .toolbarbutton-badge-stack {
-        border-radius: 14px !important;
+        border-radius: var(--uc-corner-radius) !important;
       }
     }
   }
@@ -504,4 +509,32 @@
     opacity: 0.65;
     pointer-events: none;
   }
+
+  /* Saved integer preference: 0–24 CSS pixels. Read on startup and live.
+   * Set it through the optional Corner radius menu or about:config. */
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 0) { :root { --uc-corner-radius: 0px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 1) { :root { --uc-corner-radius: 1px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 2) { :root { --uc-corner-radius: 2px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 3) { :root { --uc-corner-radius: 3px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 4) { :root { --uc-corner-radius: 4px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 5) { :root { --uc-corner-radius: 5px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 6) { :root { --uc-corner-radius: 6px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 7) { :root { --uc-corner-radius: 7px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 8) { :root { --uc-corner-radius: 8px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 9) { :root { --uc-corner-radius: 9px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 10) { :root { --uc-corner-radius: 10px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 11) { :root { --uc-corner-radius: 11px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 12) { :root { --uc-corner-radius: 12px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 13) { :root { --uc-corner-radius: 13px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 14) { :root { --uc-corner-radius: 14px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 15) { :root { --uc-corner-radius: 15px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 16) { :root { --uc-corner-radius: 16px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 17) { :root { --uc-corner-radius: 17px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 18) { :root { --uc-corner-radius: 18px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 19) { :root { --uc-corner-radius: 19px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 20) { :root { --uc-corner-radius: 20px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 21) { :root { --uc-corner-radius: 21px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 22) { :root { --uc-corner-radius: 22px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 23) { :root { --uc-corner-radius: 23px !important; } }
+  @media -moz-pref("userChrome.singleRow.cornerRadius", 24) { :root { --uc-corner-radius: 24px !important; } }
 }
