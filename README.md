@@ -14,6 +14,7 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 - Vertical hover actions with icons and native button labels; keyboard focus also reveals the list.
 - Persistent account/profile button beside the hover handle.
 - Navigation, tab-close, audio, Downloads and popup controls use Firefox's original elements.
+- Adjustable corners: 0–24px, a softer 8px default, and an optional native Corner radius menu.
 - Optional helpers for centered hover previews and Google new tabs.
 - Normal Firefox layout in Customize Toolbar, vertical-tab mode, forced-colors mode and windows narrower than 1000 CSS pixels.
 
@@ -54,6 +55,20 @@ For a fully single-row appearance, set the Bookmarks Toolbar to **Never Show**. 
 [Full setup, tuning and rollback instructions →](docs/INSTALLATION.md)
 
 ## Optional behavior
+
+### Change corner radius
+
+Run [`optional/corner-radius-menu.js`](optional/corner-radius-menu.js) using the [Browser Console steps](docs/INSTALLATION.md#optional-browser-console-helpers), then **right-click a tab or toolbar → Corner radius**. Choose a preset or **Custom…** (whole pixels, 0–24). Changes apply immediately and the selected radius survives Firefox restarts. The menu itself must be loaded again each session.
+
+**4px — subtle corners**
+
+![Actual Firefox toolbar with subtle 4px corners](assets/screenshots/radius-4.png)
+
+**16px — rounder corners**
+
+![Actual Firefox toolbar with 16px corners](assets/screenshots/radius-16.png)
+
+For a setup without the helper, create the **Number** preference `userChrome.singleRow.cornerRadius` in `about:config` and enter a value from 0 to 24.
 
 ### Center hover previews
 

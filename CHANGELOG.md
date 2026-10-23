@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- One shared corner-radius setting with a less rounded 8px default.
+- Native tab/toolbar context-menu presets, custom 0–24px values, and Reset through an optional session helper.
+- Saved radius applies after restart without loading the helper.
+- Updated address-background selector for recent Firefox UI.
+
 ## 1.0.0
 
 Initial public project package, based on the ninth local iteration.
