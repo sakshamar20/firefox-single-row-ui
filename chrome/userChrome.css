@@ -7,7 +7,12 @@
  * fullscreen. Theme colors, native tab scrolling and panel anchors retained.
  */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
-  :root { --uc-corner-radius: 16px; }
+  :root {
+    /* User settings: keep these in one place. */
+    --uc-corner-radius: 16px;
+    --uc-search-default-open: 0; /* 0 = closed while idle; 1 = open */
+    --uc-address-expanded-width: 420px;
+  }
 
   /* These preferences apply in both the compact and fallback layouts. */
   :root:not([customizing]) #ipprotection-button {
@@ -27,7 +32,7 @@
 
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
-      --uc-address-width: 260px;
+      --uc-address-width: var(--uc-address-expanded-width);
       --uc-left-controls-width: 128px;
       --uc-left-zone-width: calc(var(--uc-traffic-space) + var(--uc-left-controls-width) + var(--uc-address-width) + 8px);
       --uc-row-height: 44px;
@@ -606,7 +611,6 @@
 
 /* Search behavior: 0 = closed while idle; 1 = open while idle. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
-  :root { --uc-search-default-open: 0; --uc-address-expanded-width: 260px; }
   #urlbar {
     --urlbar-border-radius: var(--uc-corner-radius, 16px) !important;
     --urlbar-icon-border-radius: max(0px, calc(var(--uc-corner-radius, 16px) - 1px)) !important;
@@ -621,10 +625,11 @@
   #urlbar .urlbarView-background { border-radius: 0 0 var(--uc-corner-radius, 16px) var(--uc-corner-radius, 16px) !important; }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
-      --uc-address-width: calc(32px + (var(--uc-address-expanded-width) - 32px) * var(--uc-search-default-open));
+      --uc-address-open-width: min(var(--uc-address-expanded-width), calc(100vw - var(--uc-traffic-space) - var(--uc-left-controls-width) - 248px));
+      --uc-address-width: calc(32px + (var(--uc-address-open-width) - 32px) * var(--uc-search-default-open));
       &:is([uc-search-expanded], :has(#urlbar .searchmode-switcher[open], #urlbar .searchmode-switcher-panel-list[open])),
       &:not([uc-search-managed]):has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within) {
-        --uc-address-width: var(--uc-address-expanded-width);
+        --uc-address-width: var(--uc-address-open-width);
       }
       #navigator-toolbox { transition: grid-template-columns 180ms ease !important; }
       #urlbar-container {
