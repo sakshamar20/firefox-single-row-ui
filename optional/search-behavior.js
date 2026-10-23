@@ -17,6 +17,11 @@
       cleanups.push(() => target.removeEventListener(type, fn, capture));
     };
     const expand = () => root.setAttribute('uc-search-expanded', 'true');
+    const focusSearch = () => {
+      expand();
+      win.gURLBar.focus();
+      win.gURLBar.select();
+    };
     const close = () => root.removeAttribute('uc-search-expanded');
     root.setAttribute('uc-search-managed', 'true');
     close();
@@ -71,6 +76,32 @@
       if (event.composedPath().includes(field)) expand();
       else close();
     }, true);
+    // Only the unused strip AFTER the last visible tab acts as Search.
+    // Native tabs, new-tab/list buttons, scroll arrows and drag gestures stay native.
+    const strip = doc.getElementById('TabsToolbar-customization-target');
+    listen(strip, 'click', event => {
+      if (event.button !== 0 || event.detail !== 1 || event.ctrlKey || event.metaKey ||
+          event.altKey || event.shiftKey || win.getComputedStyle(doc.getElementById('navigator-toolbox')).display !== 'grid') return;
+      if (event.composedPath().some(node => node.matches?.('.tabbrowser-tab, tab-group, .tab-group-label-container, toolbarbutton, button, [role=button], splitter, .scrollbutton-up, .scrollbutton-down'))) return;
+      const area = strip.getBoundingClientRect();
+      const tabs = [...win.gBrowser.visibleTabs].map(tab => tab.getBoundingClientRect()).filter(r => r.width > 0);
+      const lastRight = Math.max(area.left, ...tabs.map(r => r.right));
+      const controls = ['new-tab-button', 'alltabs-button'].map(id => doc.getElementById(id)?.getBoundingClientRect()).filter(r => r?.width > 0);
+      const end = Math.min(area.right, ...controls.map(r => r.left));
+      if (event.clientX > lastRight && event.clientX < end && event.clientY >= area.top && event.clientY <= area.bottom) {
+        event.preventDefault();
+        focusSearch();
+      }
+    });
+    // Native tab-list popup opens below the capsule, with its right edge
+    // inside the capsule rather than projecting across the menu/profile buttons.
+    const alignTabList = event => {
+      const panel = event.target;
+      if (panel.localName !== 'panel' || panel.getAttribute('viewId') !== 'allTabsMenu-allTabsView' ||
+          win.getComputedStyle(doc.getElementById('navigator-toolbox')).display !== 'grid') return;
+      panel.moveToAnchor(strip, 'bottomright topright', -2, 4);
+    };
+    listen(doc, 'popupshown', alignTabList, true);
     listen(win, 'keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'l') expand();
       else if (event.key === 'Tab') win.requestAnimationFrame(() => {
@@ -99,5 +130,5 @@
     installed.clear();
     delete owner.__ucSearchBehavior;
   } };
-  return 'Search behavior enabled for this session. Click search or press Command-L to expand.';
+  return 'Search behavior enabled for this session. Click search, the empty tab strip, or press Command-L to expand.';
 })();
