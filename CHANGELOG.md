@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0
+
+- Collapse the native address field to a 32px search icon while browsing.
+- Click or Command-L expands it to 260px; focus, suggestions and search mode keep it open.
+- Give freed space to tabs, with reduced-motion support and native-layout fallbacks.
+- Add collapsed and expanded screenshots.
+
 ## 1.1.4
 
 - Match search-menu highlight corners to the shared radius, including focused rows.

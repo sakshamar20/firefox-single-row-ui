@@ -8,7 +8,7 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 
 ## Features
 
-- One compact row with a 260px address field and a simple **Search** prompt.
+- One compact row with a 32px search icon that expands into a 260px address field.
 - Shared tab capsule with rounded selection and theme-relative translucent fills.
 - Tabs shrink toward 40px, switch to favicon-only presentation below 80px, then use Firefox's native overflow scrolling.
 - Vertical hover actions with icons and native button labels; keyboard focus also reveals the list.
@@ -21,6 +21,14 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 This project does not bundle a Firefox color theme. The colors in the examples come from the capture environment; your installed theme supplies the background and text colors.
 
 ## Examples
+
+### Collapsible search
+
+The native address field collapses to a search icon while you browse. Click it or press **Command-L** to expand it; it stays expanded while focused, while suggestions are open, or during search mode. Click back into the webpage to collapse it. Tabs automatically take the freed space. No JavaScript helper is needed.
+
+![Collapsed search icon gives tabs more room](assets/screenshots/search-collapsed.png)
+
+![Expanded native address field while editing](assets/screenshots/search-expanded.png)
 
 ### Hover actions
 
