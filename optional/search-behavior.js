@@ -21,6 +21,7 @@
     root.setAttribute('uc-search-managed', 'true');
     close();
     listen(win, 'pointerdown', event => {
+      if (event.composedPath().some(node => node.matches?.('#trust-icon-container, #tracking-protection-icon-container, #identity-box, #notification-popup-box'))) return;
       if (event.composedPath().includes(field)) expand();
       else close();
     }, true);
