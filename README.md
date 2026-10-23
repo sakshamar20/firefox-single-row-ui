@@ -12,6 +12,14 @@ A quieter Firefox for people who like to keep everything minimal. One compact to
 
 ## 👀 A closer look
 
+**Search, ready when you are.**
+
+![Expanded Search field in the softly squared Firefox toolbar](assets/screenshots/squared-search-expanded.png)
+
+**Site information, permissions and Search, together.**
+
+![Collapsed Search showing all three native icons: site information, permissions and Search](assets/screenshots/squared-search-controls.png)
+
 **Tools tucked away until you need them.**
 
 ![Softly squared toolbar with the hover menu open](assets/screenshots/squared-hover-actions.png)
