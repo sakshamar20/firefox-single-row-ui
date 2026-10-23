@@ -560,3 +560,21 @@
     border-radius: var(--uc-corner-radius, 16px) !important;
   }
 }
+
+/* Search controls: inner button R-1; menu highlights R. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  #urlbar .searchmode-switcher,
+  #urlbar-searchmode-switcher {
+    --button-border-radius: max(0px, calc(var(--uc-corner-radius, 16px) - 1px)) !important;
+  }
+  #urlbar .searchmode-switcher::part(button),
+  #urlbar-searchmode-switcher::part(button) {
+    border-radius: max(0px, calc(var(--uc-corner-radius, 16px) - 1px)) !important;
+  }
+  #urlbar .searchmode-switcher-panel-list {
+    --panel-item-button-border-radius: var(--uc-corner-radius, 16px) !important;
+  }
+  #urlbar .searchmode-switcher-panel-list panel-item::part(button) {
+    border-radius: var(--uc-corner-radius, 16px) !important;
+  }
+}
