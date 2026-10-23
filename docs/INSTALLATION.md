@@ -40,18 +40,18 @@ The vertical list supplies 24 row positions for ordinary visible toolbar widgets
 
 ## Corner radius
 
-The default is **8px**. To change it from a menu:
+The default is **16px**. To change it from a menu:
 
 1. Replace your installed `chrome/userChrome.css` with the updated file and fully quit/reopen Firefox.
 2. Follow the Browser Console helper steps below and run `optional/corner-radius-menu.js`.
 3. Right-click a tab or an empty toolbar area and choose **Corner radius**. You can also right-click the menu handle.
-4. Choose **Square (0px)**, **Subtle (4px)**, **Soft (8px)**, **Rounded (12px)**, **Very rounded (16px)**, **Pill (24px)**, or **Custom…**. Custom values are whole numbers from 0 to 24. Reset restores 8px.
+4. Choose **Square (0px)**, **Subtle (4px)**, **Soft (8px)**, **Rounded (12px)**, **Very rounded (16px)**, **Pill (24px)**, or **Custom…**. Custom values are whole numbers from 0 to 24. Reset restores 16px.
 
 The change applies immediately to the address field, shared tab region, tab selection, close controls, toolbar button shapes and hover-action panel. Native macOS window corners, traffic lights, profile photos and system-drawn context menus keep their platform shapes. Other websites are unaffected.
 
 Your choice is saved in `userChrome.singleRow.cornerRadius` and applies after a restart, even without the helper. The menu is session-only: run the helper again after restarting to restore its menu entries. This project does not install a privileged startup loader.
 
-**Without the helper:** open `about:config`, search for `userChrome.singleRow.cornerRadius`, select **Number**, click **+**, and enter a whole number from 0 to 24. An existing Number preference can be edited directly. Delete/reset it to restore the 8px default. Values outside this range fall back to 8px. This preference is supplied by this stylesheet, not a built-in Firefox setting.
+**Without the helper:** open `about:config`, search for `userChrome.singleRow.cornerRadius`, select **Number**, click **+**, and enter a whole number from 0 to 24. An existing Number preference can be edited directly. Delete/reset it to restore the 16px default. Values outside this range fall back to 16px. This preference is supplied by this stylesheet, not a built-in Firefox setting.
 
 To remove the menu during a session (the chosen radius remains saved):
 
