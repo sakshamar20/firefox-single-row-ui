@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3
+
+- Make the search-engine dropdown panel and list follow the shared corner radius.
+- Verified live 0px, 4px and 16px values and native popup opening.
+
 ## 1.1.2
 
 - Make the inner native search-engine selector background follow the saved radius using its exposed button part.
