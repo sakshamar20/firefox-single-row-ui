@@ -20,6 +20,52 @@
     const close = () => root.removeAttribute('uc-search-expanded');
     root.setAttribute('uc-search-managed', 'true');
     close();
+    // Read the native controls rather than guessing from the current URL or
+    // permission count. A permission button can contain several indicators.
+    const input = doc.querySelector('#urlbar .urlbar-input-container');
+    let frame = 0;
+    const sizeCollapsed = () => {
+      frame = 0;
+      if (!input || field.getBoundingClientRect().width > 196) return;
+      const identity = doc.getElementById('identity-box');
+      if (identity) identity.toggleAttribute('uc-empty-control', identity.getBoundingClientRect().width === 0);
+      const style = win.getComputedStyle(input);
+      const visible = [...input.children].filter(node => {
+        const css = win.getComputedStyle(node);
+        return node.getBoundingClientRect().width > 0 && css.visibility !== 'hidden';
+      });
+      const width = Math.ceil(visible.reduce((total, node) => {
+        const css = win.getComputedStyle(node);
+        return total + node.getBoundingClientRect().width +
+          (parseFloat(css.marginLeft) || 0) + (parseFloat(css.marginRight) || 0);
+      }, 0) + (parseFloat(style.columnGap) || 0) * Math.max(0, visible.length - 1) +
+        (parseFloat(style.paddingLeft) || 0) + (parseFloat(style.paddingRight) || 0) +
+        (parseFloat(style.borderLeftWidth) || 0) + (parseFloat(style.borderRightWidth) || 0));
+      if (width >= 28 && width <= 196) {
+        const value = width + 'px';
+        if (root.style.getPropertyValue('--uc-address-measured-width') !== value)
+          root.style.setProperty('--uc-address-measured-width', value);
+      }
+    };
+    const scheduleSize = () => { if (!frame) frame = win.requestAnimationFrame(sizeCollapsed); };
+    const resize = new win.ResizeObserver(scheduleSize);
+    resize.observe(field);
+    if (input) {
+      resize.observe(input);
+      for (const child of input.children) resize.observe(child);
+    }
+    const changes = new win.MutationObserver(scheduleSize);
+    changes.observe(field, { subtree: true, childList: true, attributes: true,
+      attributeFilter: ['hidden', 'class', 'sharing', 'blocked', 'open', 'pageproxystate', 'value'] });
+    listen(win.gBrowser.tabContainer, 'TabSelect', scheduleSize);
+    listen(win, 'resize', scheduleSize);
+    cleanups.push(() => {
+      resize.disconnect(); changes.disconnect();
+      if (frame) win.cancelAnimationFrame(frame);
+      root.style.removeProperty('--uc-address-measured-width');
+      doc.getElementById('identity-box')?.removeAttribute('uc-empty-control');
+    });
+    scheduleSize();
     listen(win, 'pointerdown', event => {
       if (event.composedPath().some(node => node.matches?.('#trust-icon-container, #tracking-protection-icon-container, #identity-box, #notification-popup-box'))) return;
       if (event.composedPath().includes(field)) expand();
