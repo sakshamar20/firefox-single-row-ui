@@ -12,6 +12,7 @@
     --uc-corner-radius: 16px;
     --uc-search-default-open: 0; /* 0 = closed while idle; 1 = open */
     --uc-address-expanded-width: 420px;
+    --uc-address-collapsed-width: 128px; /* Security controls + search icon. */
   }
 
   /* These preferences apply in both the compact and fallback layouts. */
@@ -22,12 +23,12 @@
     display: flex !important;
     visibility: visible !important;
   }
-  /* Hide Firefox branding on blank/start tabs, never website favicons.
-   * Keep loading, audio, sharing and crash indicators intact.
-   */
+  /* Neutral new-tab favicon at every density; retain real site favicons,
+   * loading, media/sharing and crash indicators. */
   .tabbrowser-tab:not([pinned], [busy], [crashed], [sharing])
-    .tab-icon-image[src^="chrome://branding/"] {
-    display: none !important;
+    .tab-icon-image:is([src^="chrome://branding/"], :not([src])) {
+    display: block !important;
+    content: url("chrome://global/skin/icons/defaultFavicon.svg") !important;
   }
 
   @media (min-width: 1000px) and (not (forced-colors: active)) {
@@ -136,7 +137,8 @@
       }
       #tabbrowser-tabs .tabbrowser-tab[fadein]:not([pinned]) {
         min-width: calc(40px + var(--tab-min-width-extra-icons, 0px)) !important;
-        max-width: 220px !important;
+        /* Native drag code sets an inline max-width to freeze each tab. */
+        max-width: 220px;
         flex: 1 1 0px !important;
       }
       #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
@@ -460,6 +462,21 @@
       #tabbrowser-tabs .tabbrowser-tab:not([pinned]) {
         transition: min-width 180ms ease, max-width 180ms ease, opacity 140ms ease !important;
       }
+      /* Native DnD adds a -15px margin paired with extra padding. Our
+       * compact padding overrides require resetting the matching margin. */
+      #tabbrowser-tabs[movingtab] {
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+      }
+      #tabbrowser-tabs[movingtab] .tabbrowser-tab,
+      #tabbrowser-tabs .tabbrowser-tab[tabdrop-samewindow] {
+        transition: var(--tab-dragover-transition) !important;
+      }
+      /* Finish address/track sizing before native drag geometry is cached. */
+      #navigator-toolbox:is([movingtab], :has(.tabbrowser-tab:active)),
+      #navigator-toolbox:is([movingtab], :has(.tabbrowser-tab:active)) #urlbar-container {
+        transition: none !important;
+      }
       #tabbrowser-tabs .tabbrowser-tab[closing] { opacity: 0 !important; }
       @starting-style {
         #tabbrowser-tabs .tabbrowser-tab[fadein]:not([pinned]) {
@@ -488,7 +505,9 @@
         margin-inline: auto !important;
       }
       @media (prefers-reduced-motion: reduce) {
-        #nav-bar-customization-target > *, #tabbrowser-tabs .tabbrowser-tab { transition: none !important; }
+        #nav-bar-customization-target > *, #tabbrowser-tabs .tabbrowser-tab,
+        #tabbrowser-tabs[movingtab] .tabbrowser-tab,
+        #tabbrowser-tabs .tabbrowser-tab[tabdrop-samewindow] { transition: none !important; }
       }
       /* Keep native traffic lights at the left edge with native fullscreen
        * hiding. Their space is reserved in the left address-field track. */
@@ -625,9 +644,13 @@
   #urlbar .urlbarView-background { border-radius: 0 0 var(--uc-corner-radius, 16px) var(--uc-corner-radius, 16px) !important; }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
-      --uc-address-open-width: min(var(--uc-address-expanded-width), calc(100vw - var(--uc-traffic-space) - var(--uc-left-controls-width) - 248px));
-      --uc-address-width: calc(32px + (var(--uc-address-open-width) - 32px) * var(--uc-search-default-open));
-      &:is([uc-search-expanded], :has(#urlbar .searchmode-switcher[open], #urlbar .searchmode-switcher-panel-list[open])),
+      --uc-address-open-width: min(max(200px, var(--uc-address-expanded-width)), calc(100vw - var(--uc-traffic-space) - var(--uc-left-controls-width) - 248px));
+      /* Leave room for Firefox's native Not Secure text. */
+      &:has(#trust-icon-container.insecure, #identity-box.notSecureText) {
+        --uc-address-collapsed-width: 192px;
+      }
+      --uc-address-width: calc(var(--uc-address-collapsed-width) + (var(--uc-address-open-width) - var(--uc-address-collapsed-width)) * var(--uc-search-default-open));
+      &:is([uc-search-expanded], :has(#urlbar .searchmode-switcher[open], #urlbar .searchmode-switcher-panel-list[open], #notification-popup-box:not([hidden="true"]):not([hidden=""]))),
       &:not([uc-search-managed]):has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within) {
         --uc-address-width: var(--uc-address-open-width);
       }
@@ -637,17 +660,30 @@
         transition: width 180ms ease, min-width 180ms ease, max-width 180ms ease !important;
       }
       #urlbar { min-width: 0 !important; width: 100% !important; }
-      @container uc-address (max-width: 40px) {
+      @container uc-address (max-width: 196px) {
         #urlbar .urlbar-input-container { padding-inline: 0 !important; min-width: 0 !important; }
-        #urlbar .urlbar-input-box { min-width: 0 !important; width: 100% !important; margin: 0 !important; opacity: 0 !important; }
-        #urlbar-input { cursor: text !important; }
-        #urlbar .urlbar-input-container > :not(.urlbar-input-box),
-        #urlbar .urlbarView { display: none !important; }
-        #urlbar::before {
+        #urlbar .urlbar-input-box {
+          min-width: 32px !important; width: 32px !important; flex: 0 0 32px !important;
+          margin: 0 !important; opacity: 1 !important;
+        }
+        #urlbar-input { opacity: 0 !important; cursor: text !important; }
+        #urlbar .urlbar-input-box::after { display: none !important; }
+        #urlbar .urlbar-input-box::before {
           content: ""; position: absolute; inset: 0; background: currentColor;
           mask: url("chrome://global/skin/icons/search-glass.svg") center / 18px 18px no-repeat;
           pointer-events: none; z-index: 5;
         }
+        /* Never hide site-info, tracking, permissions or notification anchors.
+         * Firefox continues to choose which of those are relevant/visible. */
+        #urlbar .searchmode-switcher,
+        #urlbar #urlbar-searchmode-switcher,
+        #urlbar #urlbar-search-mode-indicator,
+        #urlbar #urlbar-label-box,
+        #urlbar #urlbar-revert-button-container,
+        #urlbar #page-action-buttons,
+        #urlbar .urlbar-go-button,
+        #urlbar .urlbarView { display: none !important; }
+
       }
       @media (prefers-reduced-motion: reduce) {
         #navigator-toolbox, #urlbar-container { transition: none !important; }
