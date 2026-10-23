@@ -7,7 +7,7 @@
  * fullscreen. Theme colors, native tab scrolling and panel anchors retained.
  */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
-  :root { --uc-corner-radius: 8px; }
+  :root { --uc-corner-radius: 16px; }
 
   /* These preferences apply in both the compact and fallback layouts. */
   :root:not([customizing]) #ipprotection-button {
