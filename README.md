@@ -2,11 +2,27 @@
 
 A quieter Firefox for people who like to keep everything minimal. One compact toolbar, more room for the web.
 
-![Firefox with a compact single-row toolbar](assets/screenshots/toolbar.png)
+**Featured look · softly squared**
+
+![Firefox toolbar with softly squared 11px corners](assets/screenshots/radius-11.png)
 
 - 🧭 Your tabs and everyday controls, together in one row.
 - ✨ Search when you need it. Extra space when you don’t.
 - 🎨 Make it yours with your favorite Firefox theme.
+
+## 👀 A closer look
+
+**Tools tucked away until you need them.**
+
+![Softly squared toolbar with the hover menu open](assets/screenshots/squared-hover-actions.png)
+
+**More tabs, the same tidy row.**
+
+![Softly squared toolbar with compact tabs and scrolling](assets/screenshots/squared-many-tabs.png)
+
+### Prefer a rounder look?
+
+![The same Firefox toolbar with rounder corners](assets/screenshots/rounded-comparison.png)
 
 ## 🚀 Get started
 
