@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2
+
+- Make the inner native search-engine selector background follow the saved radius using its exposed button part.
+- Preserve the rounded 16px default and native search-engine popup behavior.
+
 ## 1.1.1
 
 - Restore the rounded 16px default; keep all radius presets and custom values available.
