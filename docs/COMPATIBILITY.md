@@ -53,3 +53,5 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 Firefox does not officially support profile UI stylesheets. See [Mozilla's customization notes](https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration).
 
 - Dynamic strip (1.4.3): search alone measured 36px, site info plus search 66px, one permission indicator 96px; a granted notification plus blocked location produced four glyphs at x=242, 272, 302, 332, all centered at y=22. Native site-info and permission popups opened; HTTP warning text fit; search expanded to 420px. Sizing requires the updated session helper.
+
+- Empty strip and tab-list alignment (1.4.4): actual primary pointer click after the last tab focused the native input at 420px without creating a tab; + created a tab; clicking a real tab did not open Search. Both + and tab-list surfaces measured 28×28 at y=8 inside the capsule y=6–38. The native list panel measured x=1028–1350, y=42 below a capsule ending x=1352, y=38. Tested in isolated headless Firefox; macOS window dragging needs live verification.
