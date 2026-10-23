@@ -1,16 +1,16 @@
-# 🌿 Firefox Single Row UI
+<h1 align="center">🌿 Firefox Single Row UI</h1>
 
-A quieter Firefox for people who like to keep everything minimal. One compact toolbar, more room for the web.
+<p align="center">A quieter Firefox for people who like to keep everything minimal.<br>One compact toolbar, more room for the web.</p>
 
-**Featured look · softly squared**
-
-![Firefox toolbar with softly squared 11px corners](assets/screenshots/radius-11.png)
+![Firefox Single Row UI presentation: softly squared controls, expanded Search, and a rounder alternative](assets/screenshots/showcase.png)
 
 - 🧭 Your tabs and everyday controls, together in one row.
 - ✨ Search when you need it. Extra space when you don’t.
 - 🎨 Make it yours with your favorite Firefox theme.
 
-## 👀 A closer look
+<details>
+<summary>👀 More screenshots</summary>
+
 
 **Search, ready when you are.**
 
@@ -31,6 +31,8 @@ A quieter Firefox for people who like to keep everything minimal. One compact to
 ### Prefer a rounder look?
 
 ![The same Firefox toolbar with rounder corners](assets/screenshots/rounded-comparison.png)
+
+</details>
 
 ## 🚀 Get started
 
