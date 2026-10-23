@@ -23,6 +23,8 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 
 - Search-engine selector: verified its actual shadow-DOM background at 0/4/16/24px; the native search-engine popup remains functional. The magnifying-glass artwork retains its circular lens.
 
+- Collapsible search: actual pointer click expanded 32px to 260px; typed text was preserved; the native location command expanded it; returning focus to the page collapsed it. Tabs gained 228px, native overflow remained active with 32 tabs, fullscreen-state geometry did not overlap controls, and a narrow window used native layout.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.

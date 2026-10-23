@@ -23,11 +23,17 @@ Hover ☰ for the vertical secondary-action list. The account/profile icon remai
 
 The built-in VPN button is hidden. Hiding the button does not disable an active VPN. The optional `userContent.css` only changes Firefox's own start page, not ordinary websites or Google.
 
+## Collapsible search
+
+Click the search icon or press Command-L to expand the native address field. It stays expanded while focused, while the address suggestions are open, or during search mode. Click the webpage to return to the icon. A new tab may initially show the expanded field because Firefox focuses it for typing.
+
+The collapsed icon still uses the original address input, including its native keyboard access. Site-information and address actions are available after expanding. The CSS does not redirect searches or change the current page. No console helper is needed.
+
 ## Tuning
 
 The main custom properties are near the top of `userChrome.css`:
 
-- `--uc-address-width`: 260px. The reserved left region follows automatically.
+- `--uc-address-expanded-width`: 260px in the collapsible-search section at the end of the file. The idle width is 32px; the reserved left region follows automatically.
 - `--uc-row-height`: 44px.
 - `--uc-field-height`: 32px.
 - `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.
