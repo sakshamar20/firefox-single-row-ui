@@ -578,3 +578,50 @@
     border-radius: var(--uc-corner-radius, 16px) !important;
   }
 }
+
+/* Collapsible native address bar. Click the icon or use Command-L. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      --uc-address-expanded-width: 260px;
+      --uc-address-width: 32px;
+      &:has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within) {
+        --uc-address-width: var(--uc-address-expanded-width);
+      }
+      #navigator-toolbox { transition: grid-template-columns 180ms ease !important; }
+      #urlbar-container { transition: width 180ms ease, min-width 180ms ease, max-width 180ms ease !important; }
+      &:not(:has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within)) {
+        #urlbar {
+          min-width: 0 !important;
+          width: 100% !important;
+        }
+        #urlbar .urlbar-input-container {
+          padding-inline: 0 !important;
+          min-width: 0 !important;
+        }
+        #urlbar .urlbar-input-box {
+          min-width: 0 !important;
+          width: 100% !important;
+          margin: 0 !important;
+          opacity: 0 !important;
+        }
+        #urlbar-input { cursor: text !important; }
+        #urlbar .urlbar-input-container > :not(.urlbar-input-box) {
+          display: none !important;
+        }
+        #urlbar-container::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: currentColor;
+          mask: url("chrome://global/skin/icons/search-glass.svg") center / 18px 18px no-repeat;
+          pointer-events: none;
+          z-index: 5;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #navigator-toolbox, #urlbar-container { transition: none !important; }
+      }
+    }
+  }
+}
