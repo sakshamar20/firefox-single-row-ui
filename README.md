@@ -14,7 +14,7 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 - Vertical hover actions with icons and native button labels; keyboard focus also reveals the list.
 - Persistent account/profile button beside the hover handle.
 - Navigation, tab-close, audio, Downloads and popup controls use Firefox's original elements.
-- Adjustable corners: 0–24px, a softer 8px default, and an optional native Corner radius menu.
+- Adjustable corners: 0–24px, a rounded 16px default, and an optional native Corner radius menu.
 - Optional helpers for centered hover previews and Google new tabs.
 - Normal Firefox layout in Customize Toolbar, vertical-tab mode, forced-colors mode and windows narrower than 1000 CSS pixels.
 

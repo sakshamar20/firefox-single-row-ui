@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1
+
+- Restore the rounded 16px default; keep all radius presets and custom values available.
+- Reset now restores 16px. Existing saved choices remain respected.
+
 ## 1.1.0
 
 - One shared corner-radius setting with a less rounded 8px default.
