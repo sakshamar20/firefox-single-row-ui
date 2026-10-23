@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.4
+
+- Open and focus Search when the session helper receives a primary click in unused space after the last tab.
+- Preserve native tab, group, new-tab and scroll controls.
+- Align + and tab-list icon/badge surfaces within the tab capsule.
+- Anchor the native tab-list popup below the capsule with its right edge inset.
+
 ## 1.4.3
 
 - Measure visible native controls in the search-behavior helper and resize the collapsed strip on tab and permission changes.
