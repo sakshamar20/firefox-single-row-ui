@@ -1,0 +1,31 @@
+# Compatibility and validation
+
+The project uses modern Firefox CSS nesting, `:has()`, container queries, `color-mix()`, `@starting-style`, and internal browser selectors. It is designed for macOS, LTR interfaces and horizontal tabs. The compact rules fall back to native layout for Customize Toolbar, vertical tabs, forced-colors mode, webpage fullscreen and windows below 1000 CSS pixels.
+
+Validation used an isolated headless Firefox 158.0.1 instance. No active user profile was modified by those tests. This is not a compatibility guarantee for every release, ESR branch, fork or experimental Firefox design.
+
+## Checks completed
+
+- Shrinking tabs, favicon-only presentation, and native overflow with 2, 8, 16 and 32 tabs in earlier layout iterations.
+- Address field focus and preservation of typed values.
+- Vertical hover actions with native icons and labels; moving from the handle onto an action kept the list visible.
+- Account/profile button visible beside the menu handle.
+- Keyboard focus revealing the actions and native Downloads popup behavior.
+- Flat theme-relative fills, rounded close-button CSS, and reduced-motion rules.
+- Normal, narrow and fullscreen-attribute geometry in isolated windows.
+- Optional preview centering: actual hovered-tab and popup centers both measured x=811 in a controlled test.
+- Optional Google helper: Firefox's actual new-tab command opened a browser whose current URI was `https://www.google.com/`.
+- Search prompt visible only with an empty address field; typing removed it and preserved the input value.
+- Public sample captures rendered from the packaged stylesheet with neutral tabs.
+
+## Limits
+
+- Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
+- Firefox UI selectors and native services can change. The console helpers are session-only and depend on internal APIs.
+- Special toolbar widgets can differ from ordinary icon-and-label buttons. The vertical list supplies 24 row positions and is intended for a toolbar short enough to fit the screen.
+- Keyboard traversal follows Firefox's original DOM order, which can differ from the visual layout.
+- The visible Search prompt is CSS presentation. The native input and its accessible name remain intact.
+- A theme with poor contrast can still require its own adjustment. No fixed color theme, glass material or desktop-wallpaper transparency is bundled.
+- Native popup anchoring can be clamped by screen boundaries even with the optional centering helper.
+
+Firefox does not officially support profile UI stylesheets. See [Mozilla's customization notes](https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration).
