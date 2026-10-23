@@ -138,10 +138,10 @@
         min-width: 0 !important;
       }
       /* Base rule still works as shrinking tabs if size queries are absent.
-       * At <=80px, hide the title and close button, not the native status
+       * At <=56px, hide the title and close button, not the native status
        * indicators. Tooltips and tab accessibility labels are unchanged.
        */
-      @container uc-tab (max-width: 80px) {
+      @container uc-tab (max-width: 56px) {
         .tab-label-container, .tab-close-button {
           display: none !important;
         }
@@ -155,6 +155,31 @@
         /* Blank tabs get a neutral document icon in favicon-only mode.
          * Firefox branding remains hidden on wider blank tabs.
          */
+        .tab-icon-image[src^="chrome://branding/"]:not([busy], [crashed], [sharing]),
+        .tab-icon-image:not([src], [busy], [crashed], [sharing]) {
+          display: block !important;
+          content: url("chrome://global/skin/icons/defaultFavicon.svg") !important;
+        }
+      }
+      /* Three stages: roomy titles, faded compact titles, then icons.
+       * Fade only the text, keeping favicons and neighboring hit areas clear. */
+      @container uc-tab (min-width: 57px) and (max-width: 140px) {
+        .tab-content {
+          justify-content: flex-start !important;
+          padding-inline: 8px !important;
+          gap: 0 !important;
+        }
+        .tab-close-button { display: none !important; }
+        .tab-label-container {
+          min-width: 0 !important;
+          flex: 1 1 0 !important;
+          display: flex !important;
+          overflow: hidden !important;
+          opacity: .78 !important;
+          mask-image: linear-gradient(to right, black 0%, black 45%, transparent 100%) !important;
+        }
+        .tab-label { text-overflow: clip !important; overflow: hidden !important; }
+        .tab-icon-image, .tab-icon-pending, .tab-throbber { margin-inline: 0 6px !important; }
         .tab-icon-image[src^="chrome://branding/"]:not([busy], [crashed], [sharing]),
         .tab-icon-image:not([src], [busy], [crashed], [sharing]) {
           display: block !important;
@@ -438,7 +463,7 @@
           opacity: 0;
         }
       }
-      @container uc-tab (min-width: 81px) {
+      @container uc-tab (min-width: 141px) {
         .tab-content { padding-inline: 12px !important; }
       }
       /* Internal card alignment only. Native popup anchoring is controlled
