@@ -213,16 +213,35 @@
         outline-offset: -3px !important;
       }
       #TabsToolbar :is(#tabs-newtab-button, #new-tab-button, #alltabs-button) {
+        box-sizing: border-box !important;
         min-height: 28px !important;
         height: 28px !important;
-        padding-block: 0 !important;
+        padding: 0 !important;
+        margin-block: 0 !important;
+        align-items: center !important;
+        justify-content: center !important;
         align-self: center !important;
         --toolbarbutton-inner-padding: 6px !important;
       }
-      #TabsToolbar :is(#tabs-newtab-button, #new-tab-button, #alltabs-button) > .toolbarbutton-icon {
+      #TabsToolbar :is(#tabs-newtab-button, #new-tab-button, #alltabs-button) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+        box-sizing: border-box !important;
+        width: 28px !important; height: 28px !important;
+        min-width: 28px !important; min-height: 28px !important;
+        padding: 6px !important; margin: 0 !important;
+        align-items: center !important; justify-content: center !important;
         border-radius: var(--uc-corner-radius) !important;
       }
 
+      #alltabs-button .toolbarbutton-badge-stack > .toolbarbutton-icon {
+        width: 16px !important; height: 16px !important;
+        margin: 0 !important; padding: 0 !important;
+      }
+      #tabbrowser-arrowscrollbox { -moz-window-dragging: no-drag !important; }
+      #allTabsMenu-allTabsView {
+        min-width: 0 !important;
+        width: min(320px, calc(100vw - 32px)) !important;
+        max-width: calc(100vw - 32px) !important;
+      }
       #nav-bar {
         z-index: 15 !important;
         pointer-events: none !important;
