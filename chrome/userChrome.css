@@ -12,7 +12,7 @@
     --uc-corner-radius: 16px;
     --uc-search-default-open: 0; /* 0 = closed while idle; 1 = open */
     --uc-address-expanded-width: 420px;
-    --uc-address-collapsed-width: 128px; /* Security controls + search icon. */
+    --uc-address-collapsed-width: 96px; /* Security controls + search icon. */
   }
 
   /* These preferences apply in both the compact and fallback layouts. */
@@ -460,7 +460,8 @@
         margin-inline: 2px !important;
       }
       #tabbrowser-tabs .tabbrowser-tab:not([pinned]) {
-        transition: min-width 180ms ease, max-width 180ms ease, opacity 140ms ease !important;
+        /* Reordered DOM nodes must not replay an entrance/width animation. */
+        transition: opacity 100ms ease !important;
       }
       /* Native DnD adds a -15px margin paired with extra padding. Our
        * compact padding overrides require resetting the matching margin. */
@@ -470,7 +471,8 @@
       }
       #tabbrowser-tabs[movingtab] .tabbrowser-tab,
       #tabbrowser-tabs .tabbrowser-tab[tabdrop-samewindow] {
-        transition: var(--tab-dragover-transition) !important;
+        /* Keep a transitionend for Firefox's native drop completion. */
+        transition: transform 1ms linear !important;
       }
       /* Finish address/track sizing before native drag geometry is cached. */
       #navigator-toolbox:is([movingtab], :has(.tabbrowser-tab:active)),
@@ -478,13 +480,6 @@
         transition: none !important;
       }
       #tabbrowser-tabs .tabbrowser-tab[closing] { opacity: 0 !important; }
-      @starting-style {
-        #tabbrowser-tabs .tabbrowser-tab[fadein]:not([pinned]) {
-          min-width: 0 !important;
-          max-width: 0 !important;
-          opacity: 0;
-        }
-      }
       @container uc-tab (min-width: 141px) {
         .tab-content { padding-inline: 12px !important; }
       }
@@ -645,9 +640,12 @@
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
       --uc-address-open-width: min(max(200px, var(--uc-address-expanded-width)), calc(100vw - var(--uc-traffic-space) - var(--uc-left-controls-width) - 248px));
+      @media not -moz-pref("browser.nova.enabled") {
+        --uc-address-collapsed-width: 120px;
+      }
       /* Leave room for Firefox's native Not Secure text. */
       &:has(#trust-icon-container.insecure, #identity-box.notSecureText) {
-        --uc-address-collapsed-width: 192px;
+        --uc-address-collapsed-width: 176px;
       }
       --uc-address-width: calc(var(--uc-address-collapsed-width) + (var(--uc-address-open-width) - var(--uc-address-collapsed-width)) * var(--uc-search-default-open));
       &:is([uc-search-expanded], :has(#urlbar .searchmode-switcher[open], #urlbar .searchmode-switcher-panel-list[open], #notification-popup-box:not([hidden="true"]):not([hidden=""]))),
@@ -661,9 +659,14 @@
       }
       #urlbar { min-width: 0 !important; width: 100% !important; }
       @container uc-address (max-width: 196px) {
-        #urlbar .urlbar-input-container { padding-inline: 0 !important; min-width: 0 !important; }
+        #urlbar .urlbar-input-container {
+          padding-inline: 4px !important;
+          min-width: 0 !important;
+          align-items: center !important;
+          gap: 2px !important;
+        }
         #urlbar .urlbar-input-box {
-          min-width: 32px !important; width: 32px !important; flex: 0 0 32px !important;
+          min-width: 28px !important; width: 28px !important; flex: 0 0 28px !important;
           margin: 0 !important; opacity: 1 !important;
         }
         #urlbar-input { opacity: 0 !important; cursor: text !important; }
