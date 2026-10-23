@@ -579,44 +579,44 @@
   }
 }
 
-/* Collapsible native address bar. Click the icon or use Command-L. */
+/* Search behavior: 0 = closed while idle; 1 = open while idle. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root { --uc-search-default-open: 0; --uc-address-expanded-width: 260px; }
+  #urlbar {
+    --urlbar-border-radius: var(--uc-corner-radius, 16px) !important;
+    --urlbar-icon-border-radius: max(0px, calc(var(--uc-corner-radius, 16px) - 1px)) !important;
+    --urlbar-inner-border-radius: max(0px, calc(var(--uc-corner-radius, 16px) - 1px)) !important;
+  }
+  #urlbar .urlbar-background,
+  #urlbar .urlbar-input-container,
+  #urlbar .urlbar-input-container::before,
+  #urlbar .urlbar-input-container::after {
+    border-radius: var(--uc-corner-radius, 16px) !important;
+  }
+  #urlbar .urlbarView-background { border-radius: 0 0 var(--uc-corner-radius, 16px) var(--uc-corner-radius, 16px) !important; }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
-      --uc-address-expanded-width: 260px;
-      --uc-address-width: 32px;
-      &:has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within) {
+      --uc-address-width: calc(32px + (var(--uc-address-expanded-width) - 32px) * var(--uc-search-default-open));
+      &:is([uc-search-expanded], :has(#urlbar .searchmode-switcher[open], #urlbar .searchmode-switcher-panel-list[open])),
+      &:not([uc-search-managed]):has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within) {
         --uc-address-width: var(--uc-address-expanded-width);
       }
       #navigator-toolbox { transition: grid-template-columns 180ms ease !important; }
-      #urlbar-container { transition: width 180ms ease, min-width 180ms ease, max-width 180ms ease !important; }
-      &:not(:has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within)) {
-        #urlbar {
-          min-width: 0 !important;
-          width: 100% !important;
-        }
-        #urlbar .urlbar-input-container {
-          padding-inline: 0 !important;
-          min-width: 0 !important;
-        }
-        #urlbar .urlbar-input-box {
-          min-width: 0 !important;
-          width: 100% !important;
-          margin: 0 !important;
-          opacity: 0 !important;
-        }
+      #urlbar-container {
+        container: uc-address / inline-size;
+        transition: width 180ms ease, min-width 180ms ease, max-width 180ms ease !important;
+      }
+      #urlbar { min-width: 0 !important; width: 100% !important; }
+      @container uc-address (max-width: 40px) {
+        #urlbar .urlbar-input-container { padding-inline: 0 !important; min-width: 0 !important; }
+        #urlbar .urlbar-input-box { min-width: 0 !important; width: 100% !important; margin: 0 !important; opacity: 0 !important; }
         #urlbar-input { cursor: text !important; }
-        #urlbar .urlbar-input-container > :not(.urlbar-input-box) {
-          display: none !important;
-        }
-        #urlbar-container::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: currentColor;
+        #urlbar .urlbar-input-container > :not(.urlbar-input-box),
+        #urlbar .urlbarView { display: none !important; }
+        #urlbar::before {
+          content: ""; position: absolute; inset: 0; background: currentColor;
           mask: url("chrome://global/skin/icons/search-glass.svg") center / 18px 18px no-repeat;
-          pointer-events: none;
-          z-index: 5;
+          pointer-events: none; z-index: 5;
         }
       }
       @media (prefers-reduced-motion: reduce) {
