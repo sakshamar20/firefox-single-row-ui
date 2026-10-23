@@ -261,6 +261,16 @@
       #urlbar-searchmode-switcher, #identity-icon-box {
         border-radius: var(--uc-capsule-radius) !important;
       }
+      /* Current Firefox uses a moz-button with an exposed background part.
+       * Changing only the host radius cannot reshape that inner surface. */
+      #urlbar .searchmode-switcher,
+      #urlbar-searchmode-switcher {
+        --button-border-radius: var(--uc-corner-radius) !important;
+      }
+      #urlbar .searchmode-switcher::part(button),
+      #urlbar-searchmode-switcher::part(button) {
+        border-radius: var(--uc-corner-radius) !important;
+      }
       #urlbar-container { pointer-events: auto !important; }
 
       /* Left controls use their original native elements. The first grid
