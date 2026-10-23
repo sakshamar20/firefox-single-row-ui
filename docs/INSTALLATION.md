@@ -54,7 +54,7 @@ The main custom properties are near the top of `userChrome.css`:
 - `--uc-field-height`: 32px.
 - `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.
 
-Tabs have a 220px maximum, a 40px minimum and an 80px icon-only breakpoint. Media controls may retain additional room. Below the breakpoint the close button is hidden; Command-W and the tab context menu remain available. Selection, native title tooltips, media controls and accessibility labels are retained.
+Tabs have a 220px maximum and a 40px minimum. Above 140px titles use the native presentation. At 57–140px the favicon stays left, the close control hides to free space, and a lighter title fades from left to right. At 56px and below only centered favicons/status indicators remain. Media controls may retain additional room. In the two compact stages the close button is hidden; Command-W and the tab context menu remain available. Selection, native title tooltips, media controls and accessibility labels are retained.
 
 Opening/closing width transitions target 180ms and fades target 140ms. Reduced-motion preferences disable them. The title-to-icon change remains discrete.
 

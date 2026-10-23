@@ -27,6 +27,8 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 
 - Search behavior fix: CSS idle toggle tested at 0/1; helper kept the actual new-tab command collapsed despite automatic focus; native pointer click opened engine selection without collapsing; native typing was preserved. Focused input/background and pseudo-element radii verified at 0/4/16px. Strict new-tab closure requires the session helper.
 
+- Three-stage tab sizing: measured 220px with native titles (4 tabs), 102px and 64px with left favicons/faded labels (10 and 16 tabs), and 40px with icons/native overflow (32 tabs). Captures use neutral titles and built-in generic favicons.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
