@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0
+
+- Show a neutral favicon on new tabs at every density.
+- Preserve native security, tracking, permission and notification controls in collapsed mode; allow extra room for Not Secure text and expand for pending prompts.
+- Keep native security-button clicks from expanding the field through the optional helper.
+- Fix downward drag movement by resetting the paired native drag margin.
+- Respect native inline tab widths during drag and restore the transform transition required for drop completion.
+- Finish address/track resizing before native drag geometry is captured.
+- Repair malformed/duplicated blocks from the supplied installation through a complete replacement.
+
 ## 1.3.1
 
 - Widen the expanded search field from 260px to 420px; retain the 32px idle icon.

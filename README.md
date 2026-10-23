@@ -8,12 +8,14 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 
 ## Features
 
-- One compact row with a 32px search icon that expands into a 420px address field.
+- One compact row with a collapsed security/search strip that expands into a 420px address field.
 - Shared tab capsule with rounded selection and theme-relative translucent fills.
 - Tabs progress through roomy titles, lighter titles that fade rightward beside a left favicon, then favicon-only tabs at 56px and below; native scrolling handles overflow.
 - Vertical hover actions with icons and native button labels; keyboard focus also reveals the list.
 - Persistent account/profile button beside the hover handle.
 - Navigation, tab-close, audio, Downloads and popup controls use Firefox's original elements.
+- Native connection, tracking and permission controls remain available while search is collapsed.
+- Neutral new-tab favicon at every tab width.
 - Adjustable corners: 0–24px, a rounded 16px default, and an optional native Corner radius menu.
 - Optional helpers for centered hover previews and Google new tabs.
 - Normal Firefox layout in Customize Toolbar, vertical-tab mode, forced-colors mode and windows narrower than 1000 CSS pixels.
@@ -29,6 +31,16 @@ The native address field collapses to a search icon while you browse. Click it o
 ![Collapsed search icon gives tabs more room](assets/screenshots/search-collapsed.png)
 
 ![Expanded native address field while editing](assets/screenshots/search-expanded.png)
+
+### Security while collapsed
+
+The collapsed strip reserves 128px for native site controls and search. HTTP connection warnings get 192px; a pending permission prompt expands the field. Firefox decides which icons are relevant, including whether security/tracking information uses a combined control. Click those native controls for site information, cookies/site-data actions and permissions.
+
+![Native site-information icon and search remain visible while collapsed](assets/screenshots/collapsed-security.png)
+
+New tabs show a neutral favicon even when roomy:
+
+![Neutral new-tab favicon](assets/screenshots/new-tab-favicon.png)
 
 ### Hover actions
 
