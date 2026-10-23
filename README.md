@@ -10,7 +10,7 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 
 - One compact row with a 32px search icon that expands into a 260px address field.
 - Shared tab capsule with rounded selection and theme-relative translucent fills.
-- Tabs shrink toward 40px, switch to favicon-only presentation below 80px, then use Firefox's native overflow scrolling.
+- Tabs progress through roomy titles, lighter titles that fade rightward beside a left favicon, then favicon-only tabs at 56px and below; native scrolling handles overflow.
 - Vertical hover actions with icons and native button labels; keyboard focus also reveals the list.
 - Persistent account/profile button beside the hover handle.
 - Navigation, tab-close, audio, Downloads and popup controls use Firefox's original elements.
@@ -38,9 +38,19 @@ Hover **☰** to reveal the list without clicking. Clicking the same handle stil
 
 ### Many tabs
 
-Tabs compact to icons before native scrolling begins. Native tooltips retain the full titles; use **Command-W** or the context menu to close an icon-only tab.
+Tabs have three width-based stages: above 140px, normal titles; 57–140px, a left favicon with a lighter title fading toward the right; at 56px and below, centered icons only. Text fades inside its own tab rather than covering neighboring controls. Native tooltips retain the full titles; use **Command-W** or the context menu to close an icon-only tab.
 
-![Favicon-only tabs with native scroll controls](assets/screenshots/compact-tabs.png)
+**Roomy tabs**
+
+![Wide tab titles](assets/screenshots/tabs-wide.png)
+
+**Intermediate tabs: favicon and fading title**
+
+![Left favicon with a title fading to the right](assets/screenshots/tabs-faded.png)
+
+**Crowded tabs: icons and native scrolling**
+
+![Favicon-only tabs with native scroll controls](assets/screenshots/tabs-icons.png)
 
 These are actual captures from an isolated headless Firefox 158.0.1 profile with neutral demo tabs. Native macOS traffic lights are not rendered in headless captures. See [screenshot notes](docs/SCREENSHOTS.md).
 

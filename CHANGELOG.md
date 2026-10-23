@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+
+- Add an intermediate 57–140px tab stage with a left favicon and a lighter title fading toward the right.
+- Hide close controls in this stage to leave room for the title.
+- Delay favicon-only tabs until 56px, then retain native overflow scrolling.
+- Add three-stage tab examples.
+
 ## 1.2.1
 
 - Add the numeric CSS idle-state toggle `--uc-search-default-open` (0 closed, 1 open).
