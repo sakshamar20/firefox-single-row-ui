@@ -37,6 +37,8 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 - Compact-strip refinement: 96px with combined security controls, 120px in legacy layouts and 176px for HTTP warning text. Native site-info and permission popup checks passed; HTTP warning plus permission indicator fit; search still expanded to 420px.
 - Reorder replay removal: removed custom @starting-style and min/max-width transitions; near-instant 1ms native transform completion passed the same live-data native drop-handler check.
 
+- Icon alignment: native trust, permission and search targets all measured 28px high with center y=22 in a 44px row; active permission state had 2px gaps. HTTPS site-info and permission popups opened; HTTP text plus an active permission fit within the warning strip; search expanded normally.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
