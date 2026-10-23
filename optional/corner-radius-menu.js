@@ -8,14 +8,14 @@
   if (!owner) throw new Error("No Firefox browser window found.");
   owner.__ucCornerRadiusMenu?.stop();
   const pref = "userChrome.singleRow.cornerRadius";
-  const presets = [[0, "Square"], [4, "Subtle"], [8, "Soft — default"],
-    [12, "Rounded"], [16, "Very rounded"], [24, "Pill"]];
+  const presets = [[0, "Square"], [4, "Subtle"], [8, "Soft"],
+    [12, "Rounded"], [16, "Very rounded — default"], [24, "Pill"]];
   const installed = new Map();
   const synchronizers = new Set();
   let active = true;
   const read = () => {
-    const n = Services.prefs.getIntPref(pref, 8);
-    return Number.isInteger(n) && n >= 0 && n <= 24 ? n : 8;
+    const n = Services.prefs.getIntPref(pref, 16);
+    return Number.isInteger(n) && n >= 0 && n <= 24 ? n : 16;
   };
   const set = n => Services.prefs.setIntPref(pref, n);
   const custom = win => {
@@ -57,7 +57,7 @@
       customItem.setAttribute("label", "Custom…");
       customItem.addEventListener("command", () => custom(win));
       const reset = win.document.createXULElement("menuitem");
-      reset.setAttribute("label", "Reset to default (8px)");
+      reset.setAttribute("label", "Reset to default (16px)");
       reset.addEventListener("command", () => Services.prefs.clearUserPref(pref));
       popup.append(customItem, reset);
       const sync = () => {
