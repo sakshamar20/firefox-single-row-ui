@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.5
+
+- Handle empty-strip Search activation on primary pointer-down in the session helper.
+- Apply a session-only no-drag override to compact tab-strip backgrounds so macOS can deliver pointer events.
+- Remove that override when the helper stops; native tab and toolbar button interactions remain excluded.
+- This helper update does not change toolbar dimensions or repair an unrelated two-row layout.
+
 ## 1.4.4
 
 - Open and focus Search when the session helper receives a primary click in unused space after the last tab.
