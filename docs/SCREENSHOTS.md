@@ -21,3 +21,7 @@ To add your own screenshots, use a clean browser window, remove personal details
 The README features the softly squared 11px style: `radius-11.png`, `squared-hover-actions.png` and `squared-many-tabs.png`. `rounded-comparison.png` shows the same toolbar at 16px. These were captured in the disposable Firefox profile with a saved radius preference, then the preference was reset. This presentation change does not change the packaged rounded default. Other original captures use the rounded 16px default. `radius-4.png` and `radius-16.png` show the same toolbar at two saved radius settings. Native macOS context menus are not rendered in headless screenshot output; these images demonstrate the changed corners rather than the menu itself.
 
 The README search examples also use the featured 11px style. `squared-search-expanded.png` shows the native field focused and expanded; `squared-search-controls.png` shows native site-information, permission and search controls together. A location permission was added only to the disposable example.com test profile to show the permission indicator, then removed after capture.
+
+## README presentation board
+
+`assets/screenshots/showcase.png` arranges the real toolbar captures on a decorative backdrop with blank window canvases, labels and shadows. The toolbar artwork is unchanged. The editable layout is in `assets/screenshots/showcase.svg`. This board is a presentation composition, not a full-window browser screenshot.
