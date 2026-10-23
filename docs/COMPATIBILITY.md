@@ -21,6 +21,8 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 - Corner radius: native menu creation, preset commands at 0/4/8/12/16/24, live computed address/tab corners, Reset, helper removal, and a saved 7px value after restarting without loading the helper.
 - Custom value validation through the real menu command with a test prompt service: valid integers accepted; negative, fractional, out-of-range and nonnumeric values rejected; cancel preserved the value. The native macOS menu appearance was not captured by headless screenshots.
 
+- Search-engine selector: verified its actual shadow-DOM background at 0/4/16/24px; the native search-engine popup remains functional. The magnifying-glass artwork retains its circular lens.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
