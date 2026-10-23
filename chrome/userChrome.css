@@ -647,7 +647,10 @@
       &:has(#trust-icon-container.insecure, #identity-box.notSecureText) {
         --uc-address-collapsed-width: 176px;
       }
-      --uc-address-width: calc(var(--uc-address-collapsed-width) + (var(--uc-address-open-width) - var(--uc-address-collapsed-width)) * var(--uc-search-default-open));
+      /* The session helper measures native visible controls, including grouped
+       * permission indicators. CSS-only installations retain a safe fallback. */
+      --uc-address-idle-width: var(--uc-address-measured-width, var(--uc-address-collapsed-width));
+      --uc-address-width: calc(var(--uc-address-idle-width) + (var(--uc-address-open-width) - var(--uc-address-idle-width)) * var(--uc-search-default-open));
       &:is([uc-search-expanded], :has(#urlbar .searchmode-switcher[open], #urlbar .searchmode-switcher-panel-list[open], #notification-popup-box:not([hidden="true"]):not([hidden=""]))),
       &:not([uc-search-managed]):has(#urlbar:is([focused], [open], [breakout-extend], [searchmode]), #urlbar-container:focus-within) {
         --uc-address-width: var(--uc-address-open-width);
@@ -683,9 +686,24 @@
           flex: 0 0 auto !important;
         }
         #urlbar :is(#trust-icon, #tracking-protection-icon, #identity-icon,
-          #permissions-granted-icon, #identity-permission-box .sharing-icon) {
+          #permissions-granted-icon, #identity-permission-box .sharing-icon, #identity-permission-box .blocked-permission-icon) {
           width: 16px !important; height: 16px !important;
-          margin-block: 0 !important; align-self: center !important;
+          margin: 0 !important; align-self: center !important;
+        }
+        #urlbar #identity-box[uc-empty-control] { margin-inline: -1px !important; }
+        /* Each permission glyph occupies a 30px pitch, even when Firefox
+         * nests several glyphs in one button. Cancel 1px at the group edges
+         * so its spacing matches the adjacent 28px targets plus 2px gaps. */
+        #urlbar #identity-permission-box {
+          gap: 0 !important; padding-inline: 0 !important;
+          margin-inline: -1px !important; min-width: 30px !important;
+        }
+        #urlbar #identity-permission-box > box {
+          align-items: center !important; gap: 0 !important;
+          margin: 0 !important; padding: 0 !important;
+        }
+        #urlbar #identity-permission-box :is(#permissions-granted-icon, .sharing-icon, .blocked-permission-icon) {
+          margin-inline: 7px !important;
         }
         #urlbar .urlbar-input-box {
           min-width: 28px !important; width: 28px !important; flex: 0 0 28px !important;
