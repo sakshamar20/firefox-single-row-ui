@@ -29,6 +29,8 @@ Validation used an isolated headless Firefox 158.0.1 instance. No active user pr
 
 - Three-stage tab sizing: measured 220px with native titles (4 tabs), 102px and 64px with left favicons/faded labels (10 and 16 tabs), and 40px with icons/native overflow (32 tabs). Captures use neutral titles and built-in generic favicons.
 
+- Complete replacement with the 420px expanded field: tab and navigation rows both at y=0, no horizontal page overflow at 1440px and 1000px, native engine picker stayed open, idle toggle and typed text retained, focus-corner checks passed, and 32-tab native overflow remained available. The reported two-row screenshot was not reproduced with the packaged full stylesheet; the installed local file/version was not available for comparison.
+
 ## Limits
 
 - Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.

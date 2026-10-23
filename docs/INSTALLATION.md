@@ -27,13 +27,17 @@ The built-in VPN button is hidden. Hiding the button does not disable an active 
 
 Replace the installed `userChrome.css` with the current complete file; do not append another copy of an older collapsible-search section. Preserve your chosen `--uc-corner-radius` default when replacing it.
 
-The Search behavior section near the end contains:
+The user settings at the top contain:
 
 ```css
-:root { --uc-search-default-open: 0; --uc-address-expanded-width: 260px; }
+:root {
+  --uc-corner-radius: 16px;
+  --uc-search-default-open: 0;
+  --uc-address-expanded-width: 420px;
+}
 ```
 
-Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Fully quit/reopen Firefox after editing.
+Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Change `--uc-address-expanded-width` to adjust the expanded field; the layout limits oversized values to leave room for tabs and side controls. Fully quit/reopen Firefox after editing.
 
 **Strictly closed on new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon or Command-L opens the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
 
@@ -49,7 +53,7 @@ Services.wm.getMostRecentWindow("navigator:browser").__ucSearchBehavior?.stop();
 
 The main custom properties are near the top of `userChrome.css`:
 
-- `--uc-address-expanded-width`: 260px in the collapsible-search section at the end of the file. The idle width is 32px; the reserved left region follows automatically.
+- `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The idle width is 32px; the reserved left region follows automatically.
 - `--uc-row-height`: 44px.
 - `--uc-field-height`: 32px.
 - `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.
