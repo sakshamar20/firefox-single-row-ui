@@ -8,7 +8,7 @@ Navigation and the address field stay on the left, tabs share a rounded capsule 
 
 ## Features
 
-- One compact row with a 32px search icon that expands into a 260px address field.
+- One compact row with a 32px search icon that expands into a 420px address field.
 - Shared tab capsule with rounded selection and theme-relative translucent fills.
 - Tabs progress through roomy titles, lighter titles that fade rightward beside a left favicon, then favicon-only tabs at 56px and below; native scrolling handles overflow.
 - Vertical hover actions with icons and native button labels; keyboard focus also reveals the list.
@@ -59,7 +59,7 @@ These are actual captures from an isolated headless Firefox 158.0.1 profile with
 1. Download this repository using **Code → Download ZIP** and extract it.
 2. In Firefox, open `about:support` and choose **Profile Folder → Show in Finder**.
 3. Create a folder named `chrome` inside that active profile if it does not exist. Back up an existing `userChrome.css` before replacing it.
-4. Copy [`chrome/userChrome.css`](chrome/userChrome.css) into that folder. Keep the filename exactly `userChrome.css`.
+4. Replace the entire existing `userChrome.css` with [`chrome/userChrome.css`](chrome/userChrome.css). Keep the filename exactly `userChrome.css`; do not replace it with a small patch or append older layout snippets.
 5. In `about:config`, set `toolkit.legacyUserProfileCustomizations.stylesheets` to **true**.
 6. Use horizontal tabs. In **Customize Toolbar**, keep Reload/Stop, Sidebar, Downloads and Account on the navigation toolbar. Keep New Tab and the tab-list control on the tab toolbar.
 7. Fully quit Firefox with **Command-Q**, then reopen it.

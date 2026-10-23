@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.1
+
+- Widen the expanded search field from 260px to 420px; retain the 32px idle icon.
+- Put radius, default search state and expanded width settings together at the top.
+- Limit oversized expanded-width values to leave space for tabs and side controls.
+- Distribute a complete replacement stylesheet and clarify installation to avoid stacking partial layouts.
+
 ## 1.3.0
 
 - Add an intermediate 57–140px tab stage with a left favicon and a lighter title fading toward the right.
