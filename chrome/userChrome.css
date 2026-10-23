@@ -663,7 +663,29 @@
           padding-inline: 4px !important;
           min-width: 0 !important;
           align-items: center !important;
+          justify-content: center !important;
           gap: 2px !important;
+        }
+        /* Equal hit-target height and optical alignment; do not override
+         * native display/visibility or compress multi-indicator controls. */
+        #urlbar :is(#trust-icon-container, #tracking-protection-icon-container,
+          #identity-icon-box, #identity-permission-box, #notification-popup-box) {
+          box-sizing: border-box !important;
+          height: 28px !important; min-height: 28px !important;
+          min-width: 28px !important; width: max-content !important;
+          padding: 6px !important; margin: 0 !important;
+          align-items: center !important; justify-content: center !important;
+          flex: 0 0 auto !important;
+        }
+        #urlbar #identity-box {
+          margin: 0 !important; padding: 0 !important;
+          align-items: center !important; gap: 2px !important;
+          flex: 0 0 auto !important;
+        }
+        #urlbar :is(#trust-icon, #tracking-protection-icon, #identity-icon,
+          #permissions-granted-icon, #identity-permission-box .sharing-icon) {
+          width: 16px !important; height: 16px !important;
+          margin-block: 0 !important; align-self: center !important;
         }
         #urlbar .urlbar-input-box {
           min-width: 28px !important; width: 28px !important; flex: 0 0 28px !important;
@@ -673,7 +695,7 @@
         #urlbar .urlbar-input-box::after { display: none !important; }
         #urlbar .urlbar-input-box::before {
           content: ""; position: absolute; inset: 0; background: currentColor;
-          mask: url("chrome://global/skin/icons/search-glass.svg") center / 18px 18px no-repeat;
+          mask: url("chrome://global/skin/icons/search-glass.svg") center / 16px 16px no-repeat;
           pointer-events: none; z-index: 5;
         }
         /* Never hide site-info, tracking, permissions or notification anchors.
