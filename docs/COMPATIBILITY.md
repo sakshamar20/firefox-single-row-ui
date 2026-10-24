@@ -57,3 +57,11 @@ Firefox does not officially support profile UI stylesheets. See [Mozilla's custo
 - Empty strip and tab-list alignment (1.4.4): actual primary pointer click after the last tab focused the native input at 420px without creating a tab; + created a tab; clicking a real tab did not open Search. Both + and tab-list surfaces measured 28×28 at y=8 inside the capsule y=6–38. The native list panel measured x=1028–1350, y=42 below a capsule ending x=1352, y=38. Tested in isolated headless Firefox; macOS window dragging needs live verification.
 
 - Empty-strip pointer fix (1.4.5): with the recovery toolbar baseline, Search was focused and measured 420px after pointer-down, before pointer-up; no tab was created. + and the native tab-list popup still worked. Re-running the helper replaced its listeners, and stop removed the temporary no-drag stylesheet. Live macOS window-drag interception remains unverified.
+
+## 1.5.0 validation
+
+- CSS-only flat fills: no background gradients, borders or decorative shadows on the search surface and selected tab in idle and focused states.
+- Vertical sizing: 36, 38, 44 and 52px row geometry was checked with field, tab capsule, navigation and menu centers aligned.
+- Search motion: actual pointer clicks away from and back to an existing New Tab produced multiple intermediate visible widths from 420px to 96px and back. The tabs stayed aligned with the visible field. Reduced-motion and moving-tab states disable resize transitions.
+- Separators: tested selection at the first, middle and last tab; neither selected edge has a separator. Multi-selected edges and actual-drag state also suppress separators.
+- Native drag geometry stayed level and the native drop handler completed a reorder; a full live macOS OS-level drag/drop and Spaces transition remain unverified.

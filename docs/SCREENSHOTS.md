@@ -25,3 +25,9 @@ The README search examples also use the featured 11px style. `squared-search-exp
 ## README presentation board
 
 `assets/screenshots/showcase.png` arranges the real toolbar captures on a decorative backdrop with blank window canvases, labels and shadows. The toolbar artwork is unchanged. The editable layout is in `assets/screenshots/showcase.svg`. This board is a presentation composition, not a full-window browser screenshot.
+
+## Latest flat-fill toolbar
+
+The 1.5.0 CSS-only preview shows the flat fills and separators clear of the selected tab. The main presentation board above uses earlier captures for style comparison.
+
+![Flat translucent toolbar with faint inactive-tab separators](../assets/screenshots/flat-tab-separators.png)

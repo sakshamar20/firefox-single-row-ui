@@ -34,6 +34,8 @@ The user settings at the top contain:
   --uc-corner-radius: 16px;
   --uc-search-default-open: 0;
   --uc-address-expanded-width: 420px;
+  --uc-toolbar-height: 44px;
+  --uc-search-animation-duration: 320ms;
 }
 ```
 
@@ -43,9 +45,9 @@ Set `--uc-search-default-open` to **0** for closed while idle (default), or **1*
 
 **Empty strip click:** this requires the helper to be running. Copying its file into `chrome` is insufficient. The current helper focuses Search on primary mouse-down in unused space after the final tab and applies a temporary no-drag rule to that background for macOS. It does not change row geometry.
 
-The helper also aligns the native tab-list popup below the tab capsule, keeping its right edge inside the capsule. The CSS keeps the + and tab-list hover/pressed surfaces at 28px, vertically centered inside the 32px capsule.
+The helper also aligns the native tab-list popup below the tab capsule, keeping its right edge inside the capsule. Toolbar controls remain native; the field and tab capsule heights follow the vertical sizing setting.
 
-Without the helper the CSS idle toggle works, but automatic new-tab focus can still expand the field. The engine picker stays expanded while its menu is open. Focus outlines keep their native color and use the shared radius.
+Without the helper the CSS idle toggle works, but automatic new-tab focus can still expand the field. The engine picker stays expanded while its menu is open. Search focus uses a stronger translucent fill and the native text caret. Keyboard tab focus remains indicated; native forced-colors styling is retained.
 
 To remove the helper during a session:
 
@@ -58,8 +60,8 @@ Services.wm.getMostRecentWindow("navigator:browser").__ucSearchBehavior?.stop();
 The main custom properties are near the top of `userChrome.css`:
 
 - `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The CSS-only collapsed fallback is 96px (176px on HTTP warning pages); the session helper sizes it to the visible controls; the reserved left region follows automatically.
-- `--uc-row-height`: 44px.
-- `--uc-field-height`: 32px.
+- `--uc-toolbar-height`: vertical thickness, 44px by default. Try 38px for a slimmer row; the minimum is 36px. Field and tab heights are derived from it.
+- `--uc-search-animation-duration`: 320ms by default; set to 0ms to disable. Opening and closing respect the operating system’s reduced-motion setting.
 - `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.
 
 Tabs have a 220px maximum and a 40px minimum. Above 140px titles use the native presentation. At 57–140px the favicon stays left, the close control hides to free space, and a lighter title fades from left to right. At 56px and below only centered favicons/status indicators remain. Media controls may retain additional room. In the two compact stages the close button is hidden; Command-W and the tab context menu remain available. Selection, native title tooltips, media controls and accessibility labels are retained.
@@ -67,6 +69,12 @@ Tabs have a 220px maximum and a 40px minimum. Above 140px titles use the native 
 Tab entrance and width transitions are disabled so reordering does not replay a growing tab. Native drag completion uses a 1ms transform transition; reduced-motion mode disables it through the native reduced-motion path. The title-to-icon change remains discrete.
 
 The vertical list supplies 24 row positions for ordinary visible toolbar widgets. Keep long toolbars short enough to fit your screen; move excess widgets to Firefox's overflow menu. Specialized composite widgets can retain their own controls rather than a single caption.
+
+## Appearance and tab actions
+
+Search and the tab capsule use flat, translucent fills; the selected tab has a stronger fill. Short separators appear only between adjacent inactive tabs, never along either edge of a selected or multi-selected tab. These features and Search resizing animations need no JavaScript helper.
+
+Firefox's native double-click setting is separate from CSS: set `browser.tabs.closeTabByDblclick` to **true** in `about:config`, then restart Firefox. Native behavior is for an already-selected tab.
 
 ## Corner radius
 
