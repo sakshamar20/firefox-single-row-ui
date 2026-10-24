@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0
+
+- Replace decorative search and tab outlines with flat, theme-relative translucent fills.
+- Add a vertical toolbar-height setting; search, tabs and controls stay centered together.
+- Animate Search opening and closing, including ordinary clicks away from and back to an existing new tab; retain reduced-motion and actual-drag safeguards.
+- Add short, faint separators only between inactive tabs, clear of selected and multi-selected edges.
+- These changes work with CSS alone. Optional helper-only behaviors remain separate.
+
 ## 1.4.5
 
 - Handle empty-strip Search activation on primary pointer-down in the session helper.
