@@ -9,7 +9,6 @@
 -  Make it yours with your favorite Firefox theme.
 
 <details>
-<summary>More screenshots</summary>
 
 
 **Search, ready when you are.**
