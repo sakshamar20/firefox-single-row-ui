@@ -1,12 +1,12 @@
-<h1 align="center">🌿 Firefox Single Row UI</h1>
+<h1 align="center">Firefox Single Row UI</h1>
 
 <p align="center">A quieter Firefox for people who like to keep everything minimal.<br>One compact toolbar, more room for the web.</p>
 
 ![Firefox Single Row UI presentation: softly squared controls, expanded Search, and a rounder alternative](assets/screenshots/showcase.png)
 
-- 🧭 Your tabs and everyday controls, together in one row.
-- ✨ Search when you need it. Extra space when you don’t.
-- 🎨 Make it yours with your favorite Firefox theme.
+-  Your tabs and everyday controls, together in one row.
+-  Search when you need it. Extra space when you don’t.
+-  Make it yours with your favorite Firefox theme.
 
 <details>
 <summary>👀 More screenshots</summary>
@@ -34,7 +34,7 @@
 
 </details>
 
-## 🚀 Get started
+##  Get started
 
 Download **Code → Download ZIP**, then follow the [setup guide](docs/INSTALLATION.md).
 
@@ -42,6 +42,6 @@ Made for **Firefox on macOS with horizontal tabs**. See the [compatibility notes
 
 Optional search extras use a helper that needs to be run again after restarting Firefox. [How to enable them →](docs/INSTALLATION.md#optional-browser-console-helpers)
 
-## 💬 Make it better
+##  Make it better
 
 Found something that feels off? [Report an issue](https://github.com/sakshamar20/firefox-single-row-ui/issues/new/choose) with your Firefox version and a screenshot.
