@@ -8,9 +8,6 @@
 -  Search when you need it. Extra space when you don’t.
 -  Make it yours with your favorite Firefox theme.
 
-<details>
-
-
 **Search, ready when you are.**
 
 ![Expanded Search field in the softly squared Firefox toolbar](assets/screenshots/squared-search-expanded.png)
