@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.0
+
+- Refine pinned tabs, matching inset highlights and separator spacing; keep separators clear of selected and hovered tabs.
+- Keep titles still on hover, retain favicons on tiny tabs, and restore correctly positioned close buttons and native close completion.
+- Align action-menu icons and labels, add hover dwell, and retain extension popup anchors.
+- Let + follow the final tab and remain available at the right edge during overflow.
+- Add shared height, gap, border, opacity and close-button controls in one settings block.
+- Expand Search on internal Firefox pages, with a configurable startup delay.
+- Add an optional saved Search switch and an opt-in local startup hook. CSS remains usable without JavaScript.
+
 ## 1.5.0
 
 - Replace decorative search and tab outlines with flat, theme-relative translucent fills.

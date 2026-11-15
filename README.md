@@ -28,15 +28,13 @@
 
 ![The same Firefox toolbar with rounder corners](assets/screenshots/rounded-comparison.png)
 
-</details>
-
 ##  Get started
 
 Download **Code → Download ZIP**, then follow the [setup guide](docs/INSTALLATION.md).
 
 Made for **Firefox on macOS with horizontal tabs**. See the [compatibility notes](docs/COMPATIBILITY.md) for tested setups and known issues.
 
-Optional search extras use a helper that needs to be run again after restarting Firefox. [How to enable them →](docs/INSTALLATION.md#optional-browser-console-helpers)
+Want Search to remember your choice? Add the optional [saved Search switch](docs/INSTALLATION.md#saved-search-switch), with one-time startup setup.
 
 ##  Make it better
 
