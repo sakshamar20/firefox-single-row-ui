@@ -1,67 +1,24 @@
-# Compatibility and validation
+# Compatibility
 
-The project uses the internal `-moz-pref()` media condition, modern Firefox CSS nesting, `:has()`, container queries, `color-mix()`, `@starting-style`, and internal browser selectors. It is designed for macOS, LTR interfaces and horizontal tabs. The compact rules fall back to native layout for Customize Toolbar, vertical tabs, forced-colors mode, webpage fullscreen and windows below 1000 CSS pixels.
+Made for macOS Firefox with left-to-right horizontal tabs. The compact row applies at widths of 1000 CSS pixels and above. Narrow windows, vertical tabs, Customize mode, chromeless windows and video fullscreen retain native layouts. Forced-colors mode uses native presentation. Reduced motion is respected. This is unsupported Firefox UI customization; internal selectors may change after Firefox updates.
 
-Validation used an isolated headless Firefox 158.0.1 instance. No active user profile was modified by those tests. This is not a compatibility guarantee for every release, ESR branch, fork or experimental Firefox design.
+## Validation
 
-## Checks completed
+The original 1.5.0 layout was checked in isolated headless Firefox 158.0.1. The 1.6.0 changes were checked in disposable Firefox 160.0 profiles on macOS:
 
-- Shrinking tabs, favicon-only presentation, and native overflow with 2, 8, 16 and 32 tabs in earlier layout iterations.
-- Address field focus and preservation of typed values.
-- Vertical hover actions with native icons and labels; moving from the handle onto an action kept the list visible.
-- Account/profile button visible beside the menu handle.
-- Keyboard focus revealing the actions and native Downloads popup behavior.
-- Flat theme-relative fills, rounded close-button CSS, and reduced-motion rules.
-- Normal, narrow and fullscreen-attribute geometry in isolated windows.
-- Optional preview centering: actual hovered-tab and popup centers both measured x=811 in a controlled test.
-- Optional Google helper: Firefox's actual new-tab command opened a browser whose current URI was `https://www.google.com/`.
-- Search prompt visible only with an empty address field; typing removed it and preserved the input value.
-- Public sample captures rendered from the packaged stylesheet with neutral tabs.
-
-- Corner radius: native menu creation, preset commands at 0/4/8/12/16/24, live computed address/tab corners, Reset, helper removal, and a saved 7px value after restarting without loading the helper.
-- Custom value validation through the real menu command with a test prompt service: valid integers accepted; negative, fractional, out-of-range and nonnumeric values rejected; cancel preserved the value. The native macOS menu appearance was not captured by headless screenshots.
-
-- Search-engine selector: verified its actual shadow-DOM background at 0/4/16/24px; the native search-engine popup remains functional. The magnifying-glass artwork retains its circular lens.
-
-- Collapsible search: actual pointer click expanded 32px to 260px; typed text was preserved; the native location command expanded it; returning focus to the page collapsed it. Tabs gained 228px, native overflow remained active with 32 tabs, fullscreen-state geometry did not overlap controls, and a narrow window used native layout.
-
-- Search behavior fix: CSS idle toggle tested at 0/1; helper kept the actual new-tab command collapsed despite automatic focus; native pointer click opened engine selection without collapsing; native typing was preserved. Focused input/background and pseudo-element radii verified at 0/4/16px. Strict new-tab closure requires the session helper.
-
-- Three-stage tab sizing: measured 220px with native titles (4 tabs), 102px and 64px with left favicons/faded labels (10 and 16 tabs), and 40px with icons/native overflow (32 tabs). Captures use neutral titles and built-in generic favicons.
-
-- Complete replacement with the 420px expanded field: tab and navigation rows both at y=0, no horizontal page overflow at 1440px and 1000px, native engine picker stayed open, idle toggle and typed text retained, focus-corner checks passed, and 32-tab native overflow remained available. The reported two-row screenshot was not reproduced with the packaged full stylesheet; the installed local file/version was not available for comparison.
-
-- Collapsed security: actual HTTPS trust popup and granted-permission popup opened through pointer clicks while the strip stayed collapsed. HTTP Not Secure text plus a granted-permission indicator fit in 192px. New-tab generic favicon rendered at 16px, and search still expanded to 420px. Permissions were added only in the disposable test profile and then removed.
-- Drag repair: reproduced native dragstart/dragover with pointer actions. Before repair the row moved from y=7 to y=14.5 and non-dragged tab widths changed. After repair y stayed at 7 and widths stayed at 108px. The headless Mac driver did not deliver the OS drop event, so final edge dragover/drop handlers were invoked with the same live native DataTransfer; order changed from [0,1,2,3,4,5,6,7] to [1,2,3,4,5,6,7,0], drag state cleared and transform cleanup completed. This is not a full visual macOS drag-and-release certification, nor coverage of every pinned/grouped-tab case.
-
-- Compact-strip refinement: 96px with combined security controls, 120px in legacy layouts and 176px for HTTP warning text. Native site-info and permission popup checks passed; HTTP warning plus permission indicator fit; search still expanded to 420px.
-- Reorder replay removal: removed custom @starting-style and min/max-width transitions; near-instant 1ms native transform completion passed the same live-data native drop-handler check.
-
-- Icon alignment: native trust, permission and search targets all measured 28px high with center y=22 in a 44px row; active permission state had 2px gaps. HTTPS site-info and permission popups opened; HTTP text plus an active permission fit within the warning strip; search expanded normally.
+- Square pinned backgrounds with centered favicons; matching hover/selection geometry; equal separator gaps, hidden beside selected or hovered tabs.
+- Close controls across compact and wide widths, real pointer close, rounded-square corners, and adjustable measured edge gap.
+- Native pointer clicks select 40/56/72px tabs without closing them. Wider tabs retain the hover X. Compact titles keep their favicon gap and reserved close-button space.
+- Coordinated 40/44/48px toolbar heights; icon and label centers matched across all six standard tools-palette rows at two row heights.
+- Hover dwell, native menu exclusion, Extensions panel retention, and a real no-permission test extension’s popup remaining open after pointer exit.
+- One + button visible at a time: after the final tab with 1/3/14 tabs, then at the right edge with 40 overflowing tabs; native + click opened a tab.
+- Saved Search choice, idempotent helper loading, new-window installation and synchronization. Automatic startup and persistence were exercised in a disposable Firefox application copy, without modifying the user’s installed app.
+- Internal-page automatic expansion and frame timing. Settings startup can block the UI longer than a width animation; the configurable delay is a mitigation, not a guarantee of smooth frames on every machine.
 
 ## Limits
 
-- Real macOS fullscreen/Spaces animation, native traffic-light rendering, and every combination of tab groups/media controls have not been visually validated by these headless checks.
-- The radius menu uses privileged Browser Console code. Its entries are session-only; the saved integer is read directly by CSS using an internal media condition verified on Firefox 158.0.1. Older releases may need a fixed `--uc-corner-radius` edit instead.
-- Firefox UI selectors and native services can change. The console helpers are session-only and depend on internal APIs.
-- Special toolbar widgets can differ from ordinary icon-and-label buttons. The vertical list supplies 24 row positions and is intended for a toolbar short enough to fit the screen.
-- Keyboard traversal follows Firefox's original DOM order, which can differ from the visual layout.
-- The visible Search prompt is CSS presentation. The native input and its accessible name remain intact.
-- A theme with poor contrast can still require its own adjustment. No fixed color theme, glass material or desktop-wallpaper transparency is bundled.
-- Native popup anchoring can be clamped by screen boundaries even with the optional centering helper.
+Real macOS fullscreen/Spaces transitions, OS drag-and-drop and every installed third-party extension have not been exhaustively verified. Native popup anchoring can be clamped by screen edges. Main-thread stalls can skip layout animation frames. The palette positions up to 24 ordinary widgets; keep it short enough to fit your screen. Specialized composite widgets may retain their own presentation.
 
-Firefox does not officially support profile UI stylesheets. See [Mozilla's customization notes](https://support.mozilla.org/en-US/kb/firefox-advanced-customization-and-configuration).
+CSS alone cannot create a saved switch, distinguish every automatic focus event, or implement unused-strip clicks. The optional privileged helper handles those behaviors. It has no network requests and makes no website-security preference changes. Startup files are opt-in and can need reinstalling after Firefox app replacement.
 
-- Dynamic strip (1.4.3): search alone measured 36px, site info plus search 66px, one permission indicator 96px; a granted notification plus blocked location produced four glyphs at x=242, 272, 302, 332, all centered at y=22. Native site-info and permission popups opened; HTTP warning text fit; search expanded to 420px. Sizing requires the updated session helper.
-
-- Empty strip and tab-list alignment (1.4.4): actual primary pointer click after the last tab focused the native input at 420px without creating a tab; + created a tab; clicking a real tab did not open Search. Both + and tab-list surfaces measured 28×28 at y=8 inside the capsule y=6–38. The native list panel measured x=1028–1350, y=42 below a capsule ending x=1352, y=38. Tested in isolated headless Firefox; macOS window dragging needs live verification.
-
-- Empty-strip pointer fix (1.4.5): with the recovery toolbar baseline, Search was focused and measured 420px after pointer-down, before pointer-up; no tab was created. + and the native tab-list popup still worked. Re-running the helper replaced its listeners, and stop removed the temporary no-drag stylesheet. Live macOS window-drag interception remains unverified.
-
-## 1.5.0 validation
-
-- CSS-only flat fills: no background gradients, borders or decorative shadows on the search surface and selected tab in idle and focused states.
-- Vertical sizing: 36, 38, 44 and 52px row geometry was checked with field, tab capsule, navigation and menu centers aligned.
-- Search motion: actual pointer clicks away from and back to an existing New Tab produced multiple intermediate visible widths from 420px to 96px and back. The tabs stayed aligned with the visible field. Reduced-motion and moving-tab states disable resize transitions.
-- Separators: tested selection at the first, middle and last tab; neither selected edge has a separator. Multi-selected edges and actual-drag state also suppress separators.
-- Native drag geometry stayed level and the native drop handler completed a reorder; a full live macOS OS-level drag/drop and Spaces transition remain unverified.
+The package contains no Firefox profile data, cookies, passwords, browsing history or personal user screenshots. All published captures use disposable profiles and neutral demo content. See [the setup guide](INSTALLATION.md) for installation, settings and undo steps.

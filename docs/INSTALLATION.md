@@ -1,152 +1,71 @@
-# Installation and customization
+# Setup and customization
 
-## Profile layout
+## Install the CSS
 
-```text
-[active Firefox profile]
-└── chrome
-    ├── userChrome.css
-    └── userContent.css   (optional)
-```
+1. Download the repository ZIP and extract it.
+2. In Firefox, open `about:support` → **Profile Folder → Show in Finder**. Use the active profile’s Root Directory, not its cache directory.
+3. Back up your existing `chrome/userChrome.css`. Copy this repository’s `chrome/userChrome.css` into that folder, replacing the whole file. Create `chrome` if needed. Save as plain text with the exact filename.
+4. In `about:config`, set `toolkit.legacyUserProfileCustomizations.stylesheets` to **true**.
+5. Quit Firefox completely with **Cmd + Q**, then reopen it.
 
-Find the active profile through `about:support` → Profile Folder → Show in Finder. In `about:profiles`, use the Root Directory of the profile marked “This is the profile in use.” The Local Directory under `Library/Caches` does not load the stylesheet.
+Use horizontal tabs. Keep Reload/Stop, Sidebar, Downloads and Account on the navigation toolbar, and keep New Tab next to the tabs through Firefox’s **Customize Toolbar**. The compact layout falls back to Firefox’s native arrangement in narrow windows, vertical tabs and Customize mode. `userContent.css` is optional and only styles Firefox’s start page.
 
-Save as plain text with exact capitalization. Finder's Get Info → Name & Extension can reveal an accidental `.txt` suffix. Back up any existing stylesheet. Replace the entire file; appending unrelated toolbar customizations can create conflicts.
+Hover over ☰ briefly for the compact tools palette. Clicking ☰ opens Firefox’s own menu. An open extension or Downloads popup keeps its toolbar anchor available. The + follows the last tab and switches to the right edge when tabs overflow. Tiny tabs keep their favicon on hover; X appears when there is enough width.
 
-Enable `toolkit.legacyUserProfileCustomizations.stylesheets` in `about:config`, quit Firefox with Command-Q, then reopen it. Closing a window alone does not reload the CSS.
+## Customize
 
-## Toolbar setup
+The settings are together at the top of `userChrome.css`. Edit, save, then fully quit and reopen Firefox.
 
-Use horizontal tabs and keep Reload/Stop, Sidebar, Downloads and Account on the navigation toolbar. The CSS repositions existing widgets; it does not instantiate buttons left in the customization palette. The New Tab and tab-list buttons should remain on the tab toolbar.
+| Setting | Purpose |
+| --- | --- |
+| `--uc-corner-radius` | Overall corners; 11px by default. |
+| `--uc-toolbar-height` | Whole-row height: 40px compact, 44px normal, 48px roomy. |
+| `--uc-bar-padding-y` | Space outside Search and the tab bar; lower values make the bars taller. |
+| `--uc-tab-highlight-block-inset` | Space above/below each tab highlight; 1px keeps a small inset. |
+| `--uc-tab-gap` | Total gap between neighboring highlights; 3px by default. |
+| `--uc-menu-row-height` | Tools-palette row height. Icons and labels share a vertical center. |
+| `--uc-x-right-gap` | Space between X and the visible tab highlight’s right edge. |
+| `--uc-x-radius`, `--uc-x-size`, `--uc-x-icon-padding` | Close-button corners, size and glyph padding. |
+| `--uc-close-opacity`, `--uc-plus-opacity` | 0 is transparent; 1 is fully visible. This also fades button backgrounds. |
+| `--uc-tab-border-thickness`, `--uc-tab-border-opacity` | Selected/hover outlines; opacity is 0% by default, 100% is solid. |
+| `--uc-search-default-open` | 0 collapses Search while idle; 1 keeps it expanded. A saved switch choice takes precedence. |
+| `--uc-address-expanded-width` | Expanded Search width, limited to leave room for the toolbar. |
+| `--uc-search-animation-duration` | Search motion duration; 0ms disables it. Reduced motion is respected. |
+| `--uc-internal-search-delay` | Wait before internal-page expansion; 400ms helps avoid losing the animation while Settings initializes. This cannot prevent all startup stalls. |
+| `--uc-actions-hover-delay` | Dwell before the tools palette opens; 300ms by default. |
 
-Hover ☰ for the vertical secondary-action list. The account/profile icon remains visible to its right. Hovering the left navigation or address field does not open the list. Keyboard focus and open native action popups keep the list accessible. Downloads attention/progress attributes can keep actions revealed while status is active.
+Internal Firefox pages with the Firefox identity pill automatically expand Search. Normal websites follow your usual Search setting. Native connection, tracking, permission and notification controls remain available; Firefox determines which apply to the page. CSS alone uses a conservative collapsed width. The optional helper measures the actual visible controls and distinguishes automatic new-tab focus from an intentional Search command.
 
-The built-in VPN button is hidden. Hiding the button does not disable an active VPN. The optional `userContent.css` only changes Firefox's own start page, not ordinary websites or Google.
+## Saved Search switch
 
-## Collapsible search
+This optional helper adds a tiny vertical switch beside Search. It saves the expanded/collapsed idle choice in `userChrome.singleRow.searchAlwaysOpen`, shared across windows. The CSS reads that choice on later starts, even without the helper. The helper also enables dynamic icon sizing, strictly collapsed new tabs and clicking unused space after the final tab to focus Search.
 
-Replace the installed `userChrome.css` with the current complete file; do not append another copy of an older collapsible-search section. Preserve your chosen `--uc-corner-radius` default when replacing it.
+### Automatic startup — one-time setup on macOS
 
-The user settings at the top contain:
+1. Put `optional/search-toggle.uc.js` in the active profile’s `chrome` folder beside `userChrome.css`.
+2. Quit Firefox. In Finder, open **Applications → Firefox → Show Package Contents → Contents → Resources**.
+3. Copy `optional/startup/single-row.cfg` into `Resources`.
+4. Copy `optional/startup/defaults/pref/single-row-autoconfig.js` into `Resources/defaults/pref`. Create those folders if missing. Finder may request your Mac password.
+5. Reopen Firefox. The switch should appear beside Search.
 
-```css
-:root {
-  --uc-corner-radius: 16px;
-  --uc-search-default-open: 0;
-  --uc-address-expanded-width: 420px;
-  --uc-toolbar-height: 44px;
-  --uc-search-animation-duration: 320ms;
-}
-```
+If you already use AutoConfig/userChromeJS, load the helper through that setup instead of adding a competing `general.config.filename`. Do not overwrite existing configuration. Firefox app replacement or updates can remove the two application files; restore them if needed. Existing users of this project’s `search-toggle.uc.js` startup setup can replace that profile helper and the CSS without reinstalling the startup files.
 
-Set `--uc-search-default-open` to **0** for closed while idle (default), or **1** for open while idle. The search field still opens during use in either setting. Collapsed mode preserves Firefox's connection/site-info, tracking, permissions and notification anchors. With `optional/search-behavior.js` running, it measures visible native controls and fits their combined width: search alone 36px, site information plus search 66px, one additional permission indicator 96px, two 126px. Warning text retains its measured width. CSS alone uses a safe 96px reserve (120px in older layouts), or 176px for native Not Secure text. Pending permission prompts temporarily expand it. Firefox controls which icons apply to the current page; the CSS does not invent a security status. Change `--uc-address-expanded-width` to adjust the expanded field; the layout limits oversized values to leave room for tabs and side controls. Fully quit/reopen Firefox after editing.
+The hook runs only the named local file, with browser UI privileges, and skips Troubleshoot Mode. It loads no remote code. `general.config.sandbox_enabled = false` enables the AutoConfig hook’s privileged API access; it does not disable website process sandboxing. This is an advanced Firefox customization. The hook uses a per-call local-file loader option, without changing global unrestricted-script-load preferences. See [Mozilla’s AutoConfig guide](https://support.mozilla.org/en-US/kb/customizing-firefox-using-autoconfig).
 
-**Dynamic sizing and strictly closed new tabs:** follow the Browser Console steps below and run `optional/search-behavior.js`. Firefox automatically focuses new-tab address fields, and CSS cannot distinguish that from an intentional focus command. This session helper handles that distinction: new tabs stay closed, clicking the icon, the empty strip to the right of the last tab, or Command-L opens and focuses the field, typing and keyboard navigation remain native, and clicking the webpage closes it. Run it again after restarting Firefox. Copying the JS file to `chrome` does not load it automatically.
+### Optional Browser Console helpers
 
-**Empty strip click:** this requires the helper to be running. Copying its file into `chrome` is insufficient. The current helper focuses Search on primary mouse-down in unused space after the final tab and applies a temporary no-drag rule to that background for macOS. It does not change row geometry.
+To try the helper without startup installation, set `devtools.chrome.enabled` to true in `about:config`, open **Tools → Browser Tools → Browser Console** (Cmd + Shift + J), paste the entire `optional/search-toggle.uc.js`, and run it. This is not a webpage console. The switch lasts for that session; its saved choice persists. You can reset `devtools.chrome.enabled` afterward.
 
-The helper also aligns the native tab-list popup below the tab capsule, keeping its right edge inside the capsule. Toolbar controls remain native; the field and tab capsule heights follow the vertical sizing setting.
-
-Without the helper the CSS idle toggle works, but automatic new-tab focus can still expand the field. The engine picker stays expanded while its menu is open. Search focus uses a stronger translucent fill and the native text caret. Keyboard tab focus remains indicated; native forced-colors styling is retained.
-
-To remove the helper during a session:
-
-```js
-Services.wm.getMostRecentWindow("navigator:browser").__ucSearchBehavior?.stop();
-```
-
-## Tuning
-
-The main custom properties are near the top of `userChrome.css`:
-
-- `--uc-address-expanded-width`: 420px in the user settings at the top of the file. The CSS-only collapsed fallback is 96px (176px on HTTP warning pages); the session helper sizes it to the visible controls; the reserved left region follows automatically.
-- `--uc-toolbar-height`: vertical thickness, 44px by default. Try 38px for a slimmer row; the minimum is 36px. Field and tab heights are derived from it.
-- `--uc-search-animation-duration`: 320ms by default; set to 0ms to disable. Opening and closing respect the operating system’s reduced-motion setting.
-- `--uc-traffic-space`: 84px in normal windows and 8px in fullscreen.
-
-Tabs have a 220px maximum and a 40px minimum. Above 140px titles use the native presentation. At 57–140px the favicon stays left, the close control hides to free space, and a lighter title fades from left to right. At 56px and below only centered favicons/status indicators remain. Media controls may retain additional room. In the two compact stages the close button is hidden; Command-W and the tab context menu remain available. Selection, native title tooltips, media controls and accessibility labels are retained.
-
-Tab entrance and width transitions are disabled so reordering does not replay a growing tab. Native drag completion uses a 1ms transform transition; reduced-motion mode disables it through the native reduced-motion path. The title-to-icon change remains discrete.
-
-The vertical list supplies 24 row positions for ordinary visible toolbar widgets. Keep long toolbars short enough to fit your screen; move excess widgets to Firefox's overflow menu. Specialized composite widgets can retain their own controls rather than a single caption.
-
-## Appearance and tab actions
-
-Search and the tab capsule use flat, translucent fills; the selected tab has a stronger fill. Short separators appear only between adjacent inactive tabs, never along either edge of a selected or multi-selected tab. These features and Search resizing animations need no JavaScript helper.
-
-Firefox's native double-click setting is separate from CSS: set `browser.tabs.closeTabByDblclick` to **true** in `about:config`, then restart Firefox. Native behavior is for an already-selected tab.
-
-## Corner radius
-
-The default is **16px**. To change it from a menu:
-
-1. Replace your installed `chrome/userChrome.css` with the updated file and fully quit/reopen Firefox.
-2. Follow the Browser Console helper steps below and run `optional/corner-radius-menu.js`.
-3. Right-click a tab or an empty toolbar area and choose **Corner radius**. You can also right-click the menu handle.
-4. Choose **Square (0px)**, **Subtle (4px)**, **Soft (8px)**, **Rounded (12px)**, **Very rounded (16px)**, **Pill (24px)**, or **Custom…**. Custom values are whole numbers from 0 to 24. Reset restores 16px.
-
-The change applies immediately to the address field, shared tab region, tab selection, close controls, toolbar button shapes and hover-action panel. Native macOS window corners, traffic lights, profile photos and system-drawn context menus keep their platform shapes. Other websites are unaffected.
-
-Your choice is saved in `userChrome.singleRow.cornerRadius` and applies after a restart, even without the helper. The menu is session-only: run the helper again after restarting to restore its menu entries. This project does not install a privileged startup loader.
-
-**Without the helper:** open `about:config`, search for `userChrome.singleRow.cornerRadius`, select **Number**, click **+**, and enter a whole number from 0 to 24. An existing Number preference can be edited directly. Delete/reset it to restore the 16px default. Values outside this range fall back to 16px. This preference is supplied by this stylesheet, not a built-in Firefox setting.
-
-To remove the menu during a session (the chosen radius remains saved):
+`optional/search-behavior.js` is a compatibility copy of the same helper. Run one, not both. Re-running replaces the previous installation. To stop it in the session, run this in its owner browser window:
 
 ```js
-Services.wm.getMostRecentWindow("navigator:browser").__ucCornerRadiusMenu?.stop();
+window.__ucSearchBehavior?.stop();
 ```
 
-## Fullscreen
+The other helpers are independent and session-only: `corner-radius-menu.js` adds radius choices to tab/toolbar context menus, `center-tab-previews.js` adjusts tab previews, and `google-new-tabs.js` temporarily changes the new-tab page. Copying them into `chrome` does not automatically load them. The radius choice is saved in `userChrome.singleRow.cornerRadius` (whole numbers 0–24) and overrides the CSS default; reset that preference to return to the stylesheet’s default.
 
-The compact row supports Firefox's fullscreen CSS state and reserves separate left and middle regions. Native toolbar auto-hide is left intact. Move the pointer to the top when toolbars are hidden. Webpage/video fullscreen keeps Firefox's native layout. A real macOS fullscreen/Spaces transition still needs checking on the specific machine and release.
+## Tab actions and removal
 
-## Optional Browser Console helpers
+Firefox’s native double-click-to-close preference is separate: set `browser.tabs.closeTabByDblclick` to true in `about:config` for an already-selected tab. Tiny tabs can also be closed with Cmd + W or their context menu.
 
-The JavaScript files in `optional/` do not run merely because they are copied into `chrome`. They are separate, optional, session-only helpers and are not required for the CSS layout.
-
-1. Set `devtools.chrome.enabled` to true in `about:config` if needed.
-2. Return to the browser window you want to modify.
-3. Open Tools → Browser Tools → Browser Console (Command-Shift-J). This is different from a webpage's Web Console.
-4. Open the desired helper as plain text, copy its complete contents into the console command input and execute. Use Run or Command-Enter in multiline mode.
-5. The helper applies until Firefox quits. Run it again after a restart if desired. You may reset `devtools.chrome.enabled` after executing it.
-
-### Center previews
-
-Run `optional/center-tab-previews.js`. It measures the hovered tab and native preview, then adjusts the popup using Firefox's native anchor method. Firefox can still clamp the popup near screen edges. It applies to the most recently used browser window.
-
-Undo before restarting:
-
-```js
-Services.wm.getMostRecentWindow("navigator:browser").__ucCenteredTabPreviews?.stop();
-```
-
-### Google new tabs
-
-Run `optional/google-new-tabs.js`. Future new tabs open `https://www.google.com/`; existing tabs are not redirected. The default search engine is unchanged.
-
-For persistence across restarts, install [New Tab Override](https://addons.mozilla.org/en-US/firefox/addon/new-tab-override/), open its Preferences/Options through `about:addons`, choose a custom website URL and enter `https://www.google.com/`. Choose website focus to type directly into Google's page search box. Setting a homepage or default search engine alone does not replace the new-tab landing page. Use either the extension or the session helper, rather than competing new-tab overrides.
-
-Undo the helper before restarting:
-
-```js
-Services.wm.getMostRecentWindow("navigator:browser").__ucGoogleNewTabs?.stop();
-```
-
-## Replacing a broken or duplicated file
-
-Replace the entire installed `chrome/userChrome.css` with the packaged file. Do not merge the old favicon block or older collapse sections into it. Unclosed braces can accidentally nest the rest of the layout inside a favicon selector. Your saved radius preference remains separate; if you edited the CSS default directly, copy that one setting into the new settings block. Reload the updated `optional/search-behavior.js` helper after replacing the stylesheet if you use strict new-tab closure.
-
-## Diagnose a loading problem
-
-Temporarily replace `userChrome.css` with:
-
-```css
-#nav-bar { outline: 4px solid magenta !important; outline-offset: -4px !important; }
-```
-
-Quit and reopen Firefox. If the border does not appear, check the active profile, Root Directory, filename, plain-text format and preference before changing layout rules. Restore the real stylesheet after checking.
-
-## Roll back
-
-Quit Firefox, restore your backed-up `userChrome.css` or rename it to `userChrome.css.disabled`, then reopen. Remove the optional `userContent.css` if installed. Console helpers stop when Firefox restarts. Disable New Tab Override separately if you installed it.
+To undo the theme, quit Firefox and restore your backed-up CSS or rename it to `userChrome.css.disabled`. Remove the optional profile helper and, if installed, only this project’s `single-row.cfg` and `single-row-autoconfig.js` from the Firefox application. Reopen Firefox. Reset `userChrome.singleRow.searchAlwaysOpen` and `userChrome.singleRow.cornerRadius` if you also want to discard saved choices. Disable any separately installed new-tab extension on its own.
