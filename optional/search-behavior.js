@@ -1,10 +1,12 @@
-/* Browser Console helper: keeps automatic new-tab focus from expanding search.
- * Session-only. CSS supplies --uc-search-default-open (0 closed, 1 open).
- * Native keyboard focus, input, engine picker and commands are retained. */
+/* Firefox Single Row UI: saved Search-width toggle and native search behavior.
+ * Load in a privileged browser window (or paste into the Browser Console).
+ * Only userChrome.singleRow.searchAlwaysOpen is written. No network requests.
+ * The optional AutoConfig files load this once per browser session. */
 (() => {
   const owner = window.gBrowser ? window : Services.wm.getMostRecentWindow('navigator:browser');
   if (!owner) throw Error('No Firefox browser window found.');
   owner.__ucSearchBehavior?.stop();
+  const pref = 'userChrome.singleRow.searchAlwaysOpen';
   const installed = new Map();
   let active = true;
   const install = win => {
@@ -71,6 +73,35 @@
       doc.getElementById('identity-box')?.removeAttribute('uc-empty-control');
     });
     scheduleSize();
+    const toggle = doc.createXULElement('toolbarbutton');
+    toggle.id = 'uc-search-width-toggle';
+    toggle.className = 'toolbarbutton-1';
+    toggle.setAttribute('type', 'checkbox');
+    toggle.setAttribute('tabindex', '0');
+    toggle.setAttribute('label', 'Keep Search expanded');
+    toggle.setAttribute('aria-label', 'Keep Search expanded');
+    const defaultOpen = Number.parseFloat(win.getComputedStyle(root).getPropertyValue('--uc-search-default-open')) === 1;
+    const read = () => Services.prefs.getBoolPref(pref, defaultOpen);
+    const sync = () => {
+      const open = read();
+      toggle.setAttribute('checked', String(open));
+      toggle.setAttribute('aria-pressed', String(open));
+      toggle.setAttribute('tooltiptext', open ? 'Collapse Search when idle' : 'Keep Search expanded');
+      };
+    const preferenceObserver = { observe: sync };
+    Services.prefs.addObserver(pref, preferenceObserver);
+    field.after(toggle);
+    sync();
+    listen(toggle, 'command', () => {
+      Services.prefs.setBoolPref(pref, !read());
+      Services.prefs.savePrefFile(null);
+      close();
+      win.gBrowser.selectedBrowser.focus();
+    });
+    cleanups.push(() => {
+      Services.prefs.removeObserver(pref, preferenceObserver);
+      toggle.remove();
+    });
     listen(win, 'pointerdown', event => {
       if (event.composedPath().some(node => node.matches?.('#trust-icon-container, #tracking-protection-icon-container, #identity-box, #notification-popup-box'))) return;
       if (event.composedPath().includes(field)) expand();
@@ -144,5 +175,5 @@
     installed.clear();
     delete owner.__ucSearchBehavior;
   } };
-  return 'Search behavior enabled for this session. Click search, the empty tab strip, or press Command-L to expand.';
+  return 'Search toggle installed. Its choice is saved; AutoConfig restores the button after restart.';
 })();
