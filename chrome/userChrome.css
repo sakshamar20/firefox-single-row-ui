@@ -1,6 +1,6 @@
-/* Firefox Single Row UI 1.5.0 — flat translucent toolbar with subtle separators.
+/* Firefox Single Row UI 1.6.0 — macOS horizontal toolbar.
  * Replace the entire old stylesheet; do not append.
- * Source-checked against Firefox application markup and Mozilla main.
+ * Settings and tabs verified in isolated Firefox 160.0.
  * Live window/fullscreen behavior still requires verification on your Mac.
  * LTR, horizontal tabs. Native layout in Customize, vertical tabs and
  * windows narrower than 1000 CSS px. No forced toolbar visibility in video
@@ -8,14 +8,36 @@
  */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
   :root {
-    /* User settings: keep these in one place. */
-    --uc-corner-radius: 16px;
-    --uc-search-default-open: 0; /* 0 = closed while idle; 1 = open */
+    /* Customize here. Replace the whole stylesheet when updating. */
+    --uc-corner-radius: 11px;
+    --uc-toolbar-height: 44px;             /* 40 compact / 44 normal / 48 roomy */
+    --uc-bar-padding-y: 5px;
+    --uc-tab-highlight-block-inset: 1px;
+    --uc-tab-gap: 3px;
+    --uc-tab-separator-width: 1px;
+    --uc-tab-separator-opacity: .30;
+    --uc-tab-separator-height: 60%;
+    --uc-tab-separator-inset: 4px;
+    --uc-tab-highlight-inset: max(0px, calc((var(--uc-tab-gap) - var(--uc-tab-separator-width)) / 2));
+    --uc-search-default-open: 0;            /* 0 collapsed / 1 expanded while idle */
     --uc-address-expanded-width: 420px;
-    --uc-search-animation-duration: 320ms; /* Set to 0ms to disable. */
-    --uc-toolbar-height: 44px; /* Vertical thickness. Try 38px for a slimmer row. */
-    --uc-address-collapsed-width: 96px; /* Security controls + search icon. */
+    --uc-address-collapsed-width: 96px;
+    --uc-search-animation-duration: 320ms;
+    --uc-internal-search-delay: 400ms;      /* Wait for internal-page startup */
+    --uc-menu-row-height: 34px;
+    --uc-actions-hover-delay: 300ms;
+    --uc-actions-close-delay: 180ms;
+    --uc-x-size: 19px;
+    --uc-x-radius: 5px;
+    --uc-x-right-gap: 5px;
+    --uc-x-icon-padding: 3px;
+    --uc-close-opacity: .55;
+    --uc-plus-opacity: .65;
+    --uc-tab-border-thickness: 1px;
+    --uc-tab-border-opacity: 0%;            /* Raise this to show tab outlines */
   }
+
+  #uc-search-width-toggle { display: none !important; }
 
   /* These preferences apply in both the compact and fallback layouts. */
   :root:not([customizing]) #ipprotection-button {
@@ -261,20 +283,6 @@
         overflow: visible !important;
         --uc-action-count: 0;
       }
-      #nav-bar-customization-target::before {
-        content: "";
-        position: absolute;
-        top: var(--uc-row-height);
-        right: 8px;
-        width: 240px;
-        height: calc(var(--uc-action-count) * 36px + 8px);
-        border-radius: var(--uc-corner-radius);
-        background: var(--toolbar-bgcolor, Canvas);
-        box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 18%, transparent), 0 4px 12px #00000028;
-        visibility: hidden;
-        pointer-events: none;
-        z-index: 0;
-      }
       #nav-bar-customization-target > toolbarspring {
         display: none !important;
       }
@@ -326,18 +334,8 @@
       #stop-reload-button { left: calc(72px + var(--uc-traffic-space)) !important; }
       #sidebar-button { left: calc(104px + var(--uc-traffic-space)) !important; }
 
-      /* The actual action toolbar keeps its expanded dimensions for native
-       * overflow calculations. Only a 32px handle occupies the grid at rest.
-       * Actions reveal OVER the right end of the tabs, without resizing them.
-       * No clipping of the parent: the address field stays fully interactive.
-       */
-      #nav-bar-customization-target { pointer-events: none !important; }
-      #nav-bar-customization-target > :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button) {
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        transition: opacity 140ms ease;
-      }
+      /* Only real, visible action widgets receive a row. Native navigation,
+       * springs, hidden widgets and stop/reload never leave empty slots. */
       #PanelUI-button {
         order: 1 !important;
         margin-inline-end: 8px !important;
@@ -345,103 +343,152 @@
         display: flex !important;
         align-items: center !important;
       }
-      #PanelUI-menu-button { -moz-user-focus: normal !important; }
       #PanelUI-button, #PanelUI-menu-button {
         pointer-events: auto !important;
         width: 32px !important;
         min-width: 32px !important;
       }
-      #nav-bar:hover:not(:has(
-        #urlbar-container:hover, #back-button:hover, #forward-button:hover,
-        #stop-reload-button:hover, #sidebar-button:hover, #fxa-toolbar-menu-button:hover)),
-      #nav-bar:focus-within:not(:has(
-        #urlbar-container:focus-within, #back-button:focus-within,
-        #forward-button:focus-within, #stop-reload-button:focus-within,
-        #sidebar-button:focus-within, #fxa-toolbar-menu-button:focus-within)),
-      #nav-bar:has(#PanelUI-menu-button[open="true"],
-        #nav-bar-customization-target > :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button)[open="true"],
-        #downloads-button[attention], #downloads-button[progress="true"]) {
-        pointer-events: auto !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        #nav-bar-customization-target {
-          pointer-events: auto !important;
-          background: transparent !important;
-          box-shadow: none !important;
-          &::before { visibility: visible; pointer-events: auto; }
-        }
-        #nav-bar-customization-target > :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button) {
-          visibility: visible !important;
-          opacity: 1 !important;
-          pointer-events: auto !important;
-        }
+      #nav-bar-customization-target { pointer-events: none !important; }
+      #nav-bar-customization-target::before {
+        content: "";
+        position: absolute;
+        top: var(--uc-row-height);
+        right: 8px;
+        width: 240px;
+        height: calc(var(--uc-action-count, 0) * 32px + 12px);
+        border-radius: min(14px, var(--uc-corner-radius));
+        background: var(--arrowpanel-background, var(--toolbar-bgcolor, Canvas));
+        box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 14%, transparent), 0 8px 24px #0003;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 100ms var(--uc-actions-close-delay), visibility 0s calc(var(--uc-actions-close-delay) + 100ms);
+        z-index: 0;
       }
-      #nav-bar-customization-target > :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])) {
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) {
         position: absolute !important;
-        right: 12px !important;
-        width: 232px !important;
-        height: 36px !important;
-        min-height: 36px !important;
+        right: 14px !important;
+        width: 228px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        min-width: 0 !important;
         box-sizing: border-box !important;
         margin: 0 !important;
-        padding: 4px 8px !important;
+        padding: 0 10px !important;
         justify-content: flex-start !important;
-        border-radius: var(--uc-corner-radius) !important;
+        align-items: center !important;
+        gap: 10px !important;
+        border: 0 !important;
+        border-radius: min(8px, var(--uc-corner-radius)) !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: opacity 100ms var(--uc-actions-close-delay), visibility 0s calc(var(--uc-actions-close-delay) + 100ms) !important;
         z-index: 1 !important;
       }
-      #nav-bar-customization-target:has(> :nth-child(1 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 1; }
-      #nav-bar-customization-target > :nth-child(1 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 4px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(2 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 2; }
-      #nav-bar-customization-target > :nth-child(2 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 40px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(3 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 3; }
-      #nav-bar-customization-target > :nth-child(3 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 76px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(4 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 4; }
-      #nav-bar-customization-target > :nth-child(4 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 112px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(5 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 5; }
-      #nav-bar-customization-target > :nth-child(5 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 148px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(6 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 6; }
-      #nav-bar-customization-target > :nth-child(6 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 184px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(7 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 7; }
-      #nav-bar-customization-target > :nth-child(7 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 220px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(8 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 8; }
-      #nav-bar-customization-target > :nth-child(8 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 256px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(9 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 9; }
-      #nav-bar-customization-target > :nth-child(9 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 292px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(10 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 10; }
-      #nav-bar-customization-target > :nth-child(10 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 328px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(11 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 11; }
-      #nav-bar-customization-target > :nth-child(11 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 364px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(12 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 12; }
-      #nav-bar-customization-target > :nth-child(12 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 400px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(13 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 13; }
-      #nav-bar-customization-target > :nth-child(13 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 436px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(14 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 14; }
-      #nav-bar-customization-target > :nth-child(14 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 472px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(15 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 15; }
-      #nav-bar-customization-target > :nth-child(15 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 508px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(16 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 16; }
-      #nav-bar-customization-target > :nth-child(16 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 544px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(17 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 17; }
-      #nav-bar-customization-target > :nth-child(17 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 580px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(18 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 18; }
-      #nav-bar-customization-target > :nth-child(18 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 616px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(19 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 19; }
-      #nav-bar-customization-target > :nth-child(19 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 652px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(20 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 20; }
-      #nav-bar-customization-target > :nth-child(20 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 688px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(21 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 21; }
-      #nav-bar-customization-target > :nth-child(21 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 724px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(22 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 22; }
-      #nav-bar-customization-target > :nth-child(22 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 760px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(23 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 23; }
-      #nav-bar-customization-target > :nth-child(23 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 796px) !important; }
-      #nav-bar-customization-target:has(> :nth-child(24 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"])))) { --uc-action-count: 24; }
-      #nav-bar-customization-target > :nth-child(24 of :is(#downloads-button, :not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, toolbarspring, toolbartabstop, [hidden="true"]))) { top: calc(var(--uc-row-height) + 832px) !important; }
-      #nav-bar-customization-target > toolbarbutton:not(#back-button, #forward-button, #sidebar-button, #fxa-toolbar-menu-button) > .toolbarbutton-text {
+      #nav-bar-customization-target:has(> :nth-child(1 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 1; }
+      #nav-bar-customization-target > :nth-child(1 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(2 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 2; }
+      #nav-bar-customization-target > :nth-child(2 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 38px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(3 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 3; }
+      #nav-bar-customization-target > :nth-child(3 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 70px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(4 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 4; }
+      #nav-bar-customization-target > :nth-child(4 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 102px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(5 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 5; }
+      #nav-bar-customization-target > :nth-child(5 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 134px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(6 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 6; }
+      #nav-bar-customization-target > :nth-child(6 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 166px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(7 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 7; }
+      #nav-bar-customization-target > :nth-child(7 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 198px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(8 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 8; }
+      #nav-bar-customization-target > :nth-child(8 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 230px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(9 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 9; }
+      #nav-bar-customization-target > :nth-child(9 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 262px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(10 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 10; }
+      #nav-bar-customization-target > :nth-child(10 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 294px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(11 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 11; }
+      #nav-bar-customization-target > :nth-child(11 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 326px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(12 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 12; }
+      #nav-bar-customization-target > :nth-child(12 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 358px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(13 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 13; }
+      #nav-bar-customization-target > :nth-child(13 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 390px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(14 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 14; }
+      #nav-bar-customization-target > :nth-child(14 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 422px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(15 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 15; }
+      #nav-bar-customization-target > :nth-child(15 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 454px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(16 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 16; }
+      #nav-bar-customization-target > :nth-child(16 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 486px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(17 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 17; }
+      #nav-bar-customization-target > :nth-child(17 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 518px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(18 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 18; }
+      #nav-bar-customization-target > :nth-child(18 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 550px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(19 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 19; }
+      #nav-bar-customization-target > :nth-child(19 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 582px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(20 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 20; }
+      #nav-bar-customization-target > :nth-child(20 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 614px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(21 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 21; }
+      #nav-bar-customization-target > :nth-child(21 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 646px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(22 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 22; }
+      #nav-bar-customization-target > :nth-child(22 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 678px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(23 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 23; }
+      #nav-bar-customization-target > :nth-child(23 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 710px) !important; }
+      #nav-bar-customization-target:has(> :nth-child(24 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])))) { --uc-action-count: 24; }
+      #nav-bar-customization-target > :nth-child(24 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 742px) !important; }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])):hover {
+        background: var(--toolbarbutton-hover-background, color-mix(in srgb, currentColor 12%, transparent)) !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack, .toolbarbutton-text) {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+        width: 16px !important; height: 16px !important;
+        min-width: 16px !important; flex: 0 0 16px !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > .toolbarbutton-text {
         display: block !important;
         text-align: start !important;
-        margin-inline-start: 10px !important;
         flex: 1 !important;
+        min-width: 0 !important;
+        font-size: 13px !important;
+      }
+      /* Hover dwell opens the palette. Clicking the native menu button
+       * suppresses it immediately, so two menus never appear together. */
+      #nav-bar:hover:not(:has(
+        #urlbar-container:hover, #back-button:hover, #forward-button:hover,
+        #stop-reload-button:hover, #sidebar-button:hover, #fxa-toolbar-menu-button:hover,
+        #uc-search-width-toggle:hover, #PanelUI-menu-button:active, #PanelUI-menu-button[open="true"])) {
+        #nav-bar-customization-target::before {
+          visibility: visible; opacity: 1; pointer-events: auto;
+          transition-delay: var(--uc-actions-hover-delay), var(--uc-actions-hover-delay);
+        }
+        #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) {
+          visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;
+          transition-delay: var(--uc-actions-hover-delay), var(--uc-actions-hover-delay) !important;
+        }
+      }
+      /* A native popup owns its anchor until it closes. Keep the palette
+       * and anchor alive while crossing from it into an extension panel. */
+      &:has(#unified-extensions-panel[panelopen], #downloadsPanel[panelopen],
+        #widget-overflow[panelopen], #customizationui-widget-panel[panelopen],
+        #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))[open="true"]) {
+        #nav-bar-customization-target::before {
+          visibility: visible; opacity: 1; pointer-events: auto; transition-delay: 0s;
+        }
+        #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) {
+          visibility: visible !important; opacity: 1 !important; pointer-events: auto !important;
+          transition-delay: 0s !important;
+        }
+      }
+      &:has(#PanelUI-menu-button:is(:active, [open="true"])) {
+        #nav-bar-customization-target::before { visibility: hidden; opacity: 0; pointer-events: none; transition: none; }
+        #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) { visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; transition: none !important; }
       }
       #nav-bar-customization-target > #fxa-toolbar-menu-button {
         position: static !important;
@@ -534,9 +581,6 @@
         margin-inline: 0 !important;
       }
       #TabsToolbar-customization-target { column-gap: 2px !important; }
-      #tabbrowser-tabs .tabbrowser-tab:hover:not([visuallyselected], [multiselected]) .tab-background {
-        background: color-mix(in srgb, currentColor 8%, transparent) !important;
-      }
       #tabbrowser-tabs .tabbrowser-tab {
         border-radius: var(--uc-corner-radius) !important;
       }
@@ -753,9 +797,6 @@
         box-shadow: none !important;
         background: color-mix(in srgb, currentColor 17%, transparent) !important;
       }
-      #tabbrowser-tabs .tabbrowser-tab:hover:not([visuallyselected], [multiselected]) .tab-background {
-        background: color-mix(in srgb, currentColor 10%, transparent) !important;
-      }
       #urlbar {
         border: 0 !important; outline: none !important; box-shadow: none !important;
       }
@@ -805,10 +846,13 @@
       #tabbrowser-tabs:not([movingtab]) .tabbrowser-tab:not([selected], [visuallyselected], [multiselected], [hidden], [closing]):has(+ .tabbrowser-tab:not([selected], [visuallyselected], [multiselected], [hidden], [closing])) .tab-background::after {
         content: "" !important;
         position: absolute;
-        inset-inline-end: 0;
-        top: 27%; height: 46%; width: 1px;
+        inset-inline-end: calc(-1 * var(--uc-tab-highlight-inset) + 1px);
+        top: calc((100% - var(--uc-tab-separator-height)) / 2);
+        height: var(--uc-tab-separator-height);
+        width: var(--uc-tab-separator-width);
+        border-radius: 0;
         background: currentColor;
-        opacity: .14;
+        opacity: var(--uc-tab-separator-opacity);
         pointer-events: none;
       }
       #tabbrowser-tabs[movingtab] .tab-background::after { content: none !important; }
@@ -828,6 +872,415 @@
         transition: width var(--uc-search-animation-duration) cubic-bezier(.4, 0, .2, 1),
           min-width var(--uc-search-animation-duration) cubic-bezier(.4, 0, .2, 1),
           max-width var(--uc-search-animation-duration) cubic-bezier(.4, 0, .2, 1) !important;
+      }
+    }
+  }
+}
+
+
+/* Matching selected/hover geometry; square pinned slots with centered icons. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      #tabbrowser-tabs .tabbrowser-tab { border-radius: 0 !important; }
+      #tabbrowser-tabs .tab-background {
+        margin-inline: var(--uc-tab-highlight-inset) !important;
+      }
+      #tabbrowser-tabs .tab-background::before { content: none !important; }
+      #tabbrowser-tabs .tabbrowser-tab:not([visuallyselected], [multiselected]):hover .tab-background {
+        background: color-mix(in srgb, currentColor 10%, transparent) !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab .tab-close-button {
+        position: relative !important;
+        inset-inline-end: calc(var(--uc-tab-highlight-inset) + min(var(--uc-corner-radius), var(--uc-tab-height) / 2) - 24px) !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] {
+        width: var(--uc-tab-height) !important;
+        min-width: var(--uc-tab-height) !important;
+        max-width: var(--uc-tab-height) !important;
+        height: var(--uc-tab-height) !important;
+        flex: 0 0 var(--uc-tab-height) !important;
+        padding: 0 !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-background {
+        margin-inline: 0 !important;
+        border-radius: min(var(--uc-corner-radius), var(--uc-tab-height) / 2) !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-content {
+        padding: 0 !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 0 !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-label-container { display: none !important; }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-icon-stack {
+        flex: 0 0 16px !important;
+        width: 16px !important; height: 16px !important;
+        margin: 0 !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] :is(.tab-icon-image, .tab-throbber) {
+        margin-inline: 0 !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-background::after { content: none !important; }
+      #uc-search-width-toggle {
+        display: flex !important;
+        background: transparent !important; border: 0 !important;
+        position: absolute !important;
+        top: calc((var(--uc-row-height) - 24px) / 2) !important;
+        left: calc(12px + var(--uc-traffic-space) + var(--uc-left-controls-width) + var(--uc-address-width) + 2px) !important;
+        width: 14px !important; min-width: 14px !important; height: 24px !important;
+        margin: 0 !important; padding: 0 !important;
+        pointer-events: auto !important;
+        border-radius: 5px !important;
+        -moz-window-dragging: no-drag !important;
+      }
+      #uc-search-width-toggle > .toolbarbutton-icon { display: none !important; }
+      #uc-search-width-toggle::before {
+        content: ""; position: absolute; left: 4px; top: 5px;
+        width: 6px; height: 14px; box-sizing: border-box;
+        border: 1px solid currentColor; border-radius: 4px;
+        opacity: .65; pointer-events: none;
+      }
+      #uc-search-width-toggle::after {
+        content: ""; position: absolute; left: 5px; top: 14px;
+        width: 4px; height: 4px; border-radius: 50%;
+        background: currentColor; opacity: .95; pointer-events: none;
+      }
+      #uc-search-width-toggle[checked="true"]::after { top: 6px; }
+      #uc-search-width-toggle:hover { background: color-mix(in srgb, currentColor 12%, transparent) !important; }
+      #uc-search-width-toggle > .toolbarbutton-text { display: none !important; }
+      &:has(#uc-search-width-toggle) {
+        --uc-left-zone-width: calc(var(--uc-traffic-space) + var(--uc-left-controls-width) + var(--uc-address-width) + 24px);
+      }
+      #uc-search-width-toggle {
+        transition: left var(--uc-search-animation-duration) cubic-bezier(.4, 0, .2, 1) !important;
+      }
+      @media (prefers-reduced-motion: reduce) { #uc-search-width-toggle { transition: none !important; } }
+    }
+  }
+  /* Saved choice is read by CSS even before the helper loads. */
+  @media -moz-pref("userChrome.singleRow.searchAlwaysOpen", true) {
+    :root { --uc-search-default-open: 1 !important; }
+  }
+  @media -moz-pref("userChrome.singleRow.searchAlwaysOpen", false) {
+    :root { --uc-search-default-open: 0 !important; }
+  }
+}
+
+/* Inset tab highlights and close-button behavior. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      --uc-tab-highlight-end-inset: calc(var(--uc-tab-highlight-inset, 3px) + var(--uc-tab-separator-width, 1px));
+      --uc-tab-effective-block-inset: clamp(0px, var(--uc-tab-highlight-block-inset), calc((var(--uc-tab-height) - 20px) / 2));
+      --uc-tab-highlight-height: calc(var(--uc-tab-height) - 2 * var(--uc-tab-effective-block-inset));
+
+      /* One line occupies one pixel of the inter-tab gap. Reserving that
+       * pixel at the end makes the empty space on both sides equal. */
+      #tabbrowser-tabs .tab-background {
+        margin-inline: var(--uc-tab-highlight-inset, 3px) var(--uc-tab-highlight-end-inset) !important;
+        margin-block: var(--uc-tab-effective-block-inset) !important;
+        min-height: var(--uc-tab-highlight-height) !important;
+      }
+      /* Repeat the ID to supersede the older separator selector when appended. */
+      #tabbrowser-tabs#tabbrowser-tabs .tab-background::after { content: none !important; }
+      #tabbrowser-tabs#tabbrowser-tabs:not([movingtab]) .tabbrowser-tab:not([pinned], [selected], [visuallyselected], [multiselected], [hidden], [closing], :hover):has(+ .tabbrowser-tab:not([pinned], [selected], [visuallyselected], [multiselected], [hidden], [closing], :hover)) .tab-background::after {
+        content: "" !important;
+        inset-inline-end: calc(-1 * var(--uc-tab-highlight-end-inset)) !important;
+      }
+      /* Hide both neighboring separators immediately, including a line
+       * painted by the previous tab's background. */
+      #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:is(:hover, [selected], [visuallyselected], [multiselected]) .tab-background::after,
+      #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:has(+ .tabbrowser-tab:is(:hover, [selected], [visuallyselected], [multiselected])) .tab-background::after {
+        content: none !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab[pinned] .tab-background {
+        margin-inline: var(--uc-tab-effective-block-inset) !important;
+        border-radius: min(var(--uc-corner-radius), var(--uc-tab-highlight-height) / 2) !important;
+      }
+      #tabbrowser-tabs .tabbrowser-tab .tab-close-button {
+        inset-inline-end: calc(var(--uc-tab-highlight-end-inset) + min(var(--uc-corner-radius), var(--uc-tab-highlight-height) / 2) - 24px) !important;
+      }
+      /* Firefox completes removal on a max-width transitionend. Keep
+       * that event without replaying a visible tab-width animation. */
+      #tabbrowser-tabs .tabbrowser-tab:not([fadein], [pinned]) {
+        min-width: 0 !important;
+        transition: max-width 1ms linear !important;
+      }
+      /* The old compact-title query hid X at widths below 141px. Restore
+       * it on hover at every unpinned-tab width, with a real hit target. */
+      #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-close-button {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex: 0 0 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        pointer-events: auto !important;
+      }
+      @container uc-tab (min-width: 57px) and (max-width: 140px) {
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-content {
+          position: relative !important;
+          padding-inline: 6px 28px !important;
+          gap: 0 !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-close-button {
+          position: absolute !important;
+          top: 50% !important;
+          transform: translateY(-50%) !important;
+          margin-inline: 0 !important;
+          inset-inline-end: calc(var(--uc-tab-highlight-end-inset) + min(var(--uc-corner-radius), var(--uc-tab-highlight-height) / 2) - 10px) !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-icon-stack {
+          width: 16px !important; flex: 0 0 16px !important; margin-inline: 0 !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover :is(.tab-icon-image, .tab-throbber, .tab-icon-pending) {
+          margin-inline: 0 !important;
+        }
+      }
+      /* At favicon-only density, hover swaps the favicon for X, avoiding
+       * overlap. Pinned tabs retain their normal favicon-only behavior. */
+      @container uc-tab (max-width: 56px) {
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-icon-stack { display: none !important; }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-close-button {
+          margin-inline: 0 !important;
+          inset-inline-end: calc(var(--uc-tab-separator-width, 1px) / 2) !important;
+        }
+      }
+    }
+  }
+}
+
+/* Coordinated heights and aligned menu rows. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      --uc-field-height: clamp(28px, calc(var(--uc-row-height) - 2 * var(--uc-bar-padding-y)), calc(var(--uc-row-height) - 4px));
+      --uc-tab-height: calc(var(--uc-field-height) - 2px);
+
+      /* A single grid row puts the label's line box and the icon on the
+       * same vertical center, independent of native XUL label alignment. */
+      #nav-bar-customization-target::before {
+        height: calc(var(--uc-action-count, 0) * var(--uc-menu-row-height) + 12px) !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) {
+        display: grid !important;
+        grid-template-columns: 16px minmax(0, 1fr) !important;
+        grid-template-rows: minmax(0, 1fr) !important;
+        height: var(--uc-menu-row-height) !important;
+        min-height: var(--uc-menu-row-height) !important;
+        align-items: center !important;
+        align-content: center !important;
+        column-gap: 10px !important;
+        padding-block: 0 !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > :is(.toolbarbutton-icon, .toolbarbutton-badge-stack) {
+        grid-area: 1 / 1 !important;
+        align-self: center !important;
+        justify-self: center !important;
+        width: 16px !important; height: 16px !important;
+        margin: 0 !important; padding: 0 !important;
+        position: static !important; transform: none !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > .toolbarbutton-badge-stack {
+        display: grid !important;
+        position: relative !important;
+        align-items: center !important;
+        justify-items: center !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > .toolbarbutton-badge-stack > * { grid-area: 1 / 1 !important; }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > .toolbarbutton-badge-stack > .toolbarbutton-icon {
+        grid-area: 1 / 1 !important;
+        width: 16px !important; height: 16px !important;
+        padding: 0 !important; margin: 0 !important;
+      }
+      #nav-bar-customization-target > :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem])) > .toolbarbutton-text {
+        grid-area: 1 / 2 !important;
+        align-self: center !important;
+        justify-self: stretch !important;
+        display: block !important;
+        line-height: 1.4 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important; padding: 0 !important;
+        position: static !important; transform: none !important;
+        white-space: nowrap !important;
+      }
+      #nav-bar-customization-target > :nth-child(1 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 0 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(2 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 1 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(3 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 2 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(4 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 3 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(5 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 4 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(6 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 5 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(7 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 6 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(8 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 7 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(9 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 8 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(10 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 9 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(11 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 10 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(12 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 11 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(13 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 12 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(14 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 13 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(15 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 14 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(16 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 15 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(17 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 16 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(18 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 17 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(19 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 18 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(20 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 19 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(21 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 20 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(22 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 21 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(23 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 22 * var(--uc-menu-row-height)) !important; }
+      #nav-bar-customization-target > :nth-child(24 of :is(#downloads-button, :is(toolbarbutton, toolbaritem):not(#urlbar-container, #back-button, #forward-button, #stop-reload-button, #sidebar-button, #fxa-toolbar-menu-button, #ipprotection-button, #uc-search-width-toggle, [hidden], [overflowedItem]))) { top: calc(var(--uc-row-height) + 6px + 23 * var(--uc-menu-row-height)) !important; }
+      /* Small tabs remain selection targets. Keep this breakpoint at
+       * or above the 56px favicon-only threshold in the base stylesheet. */
+      @container uc-tab (max-width: 72px) {
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-close-button {
+          display: none !important;
+          pointer-events: none !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-icon-stack {
+          display: grid !important;
+          width: 16px !important; flex: 0 0 16px !important;
+          margin-inline: 0 !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-content {
+          padding-inline: 6px !important;
+          gap: 6px !important;
+          justify-content: center !important;
+        }
+      }
+    }
+  }
+}
+/* Keep compact titles still on hover. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      @container uc-tab (min-width: 57px) and (max-width: 140px) {
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content,
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-content {
+          position: relative !important;
+          padding-inline: 8px 30px !important;
+          justify-content: flex-start !important;
+          gap: 6px !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-icon-stack,
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-icon-stack {
+          display: grid !important;
+          width: 16px !important;
+          flex: 0 0 16px !important;
+          margin-inline: 0 !important;
+        }
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]) :is(.tab-icon-image, .tab-throbber, .tab-icon-pending),
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover :is(.tab-icon-image, .tab-throbber, .tab-icon-pending) {
+          margin-inline: 0 !important;
+        }
+      }
+      @container uc-tab (min-width: 57px) and (max-width: 72px) {
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content,
+        #tabbrowser-tabs .tabbrowser-tab:not([pinned]):hover .tab-content {
+          padding-inline: 8px !important;
+        }
+      }
+    }
+  }
+}
+
+
+/* Independent close-button size, corner and edge-gap controls. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      /* The extra ID deliberately outranks the older nested hover rules. */
+      #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
+        position: relative !important;
+        padding-inline-end: calc(var(--uc-tab-highlight-end-inset, 2px) + var(--uc-x-right-gap) + var(--uc-x-size) + 6px) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-close-button {
+        appearance: none !important;
+        box-sizing: border-box !important;
+        position: absolute !important;
+        inset: auto !important;
+        top: 50% !important;
+        inset-inline-end: calc(var(--uc-tab-highlight-end-inset, 2px) + var(--uc-x-right-gap)) !important;
+        transform: translateY(-50%) !important;
+        width: var(--uc-x-size) !important;
+        height: var(--uc-x-size) !important;
+        min-width: var(--uc-x-size) !important;
+        min-height: var(--uc-x-size) !important;
+        max-width: var(--uc-x-size) !important;
+        max-height: var(--uc-x-size) !important;
+        flex: none !important;
+        padding: var(--uc-x-icon-padding) !important;
+        margin: 0 !important;
+        border: 0 !important;
+        border-radius: var(--uc-x-radius) !important;
+        background-image: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-close-button:hover {
+        border-radius: var(--uc-x-radius) !important;
+        background-color: color-mix(in srgb, currentColor 18%, transparent) !important;
+      }
+      /* Retain safe selection of narrow tabs, with no hidden button space. */
+      @container uc-tab (max-width: 72px) {
+        #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-close-button {
+          display: none !important; pointer-events: none !important;
+        }
+        #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
+          padding-inline-end: 8px !important;
+        }
+      }
+      @container uc-tab (max-width: 56px) {
+        #tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
+          padding-inline-end: 6px !important;
+        }
+      }
+    }
+  }
+}
+
+/* Restore Firefox's two native + buttons:
+ * inline after the last tab, then fixed at the end during overflow. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      #tabbrowser-tabs[hasadjacentnewtabbutton]:not([overflow]):not(:has(#tabbrowser-arrowscrollbox[overflowing])) #tabs-newtab-button {
+        display: flex !important;
+        flex: 0 0 28px !important;
+        width: 28px !important;
+        min-width: 28px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        padding-inline: 0 !important;
+        margin-inline: 2px 0 !important;
+        align-self: center !important;
+      }
+      &:has(#tabbrowser-tabs[hasadjacentnewtabbutton]:not([overflow])):not(:has(#tabbrowser-arrowscrollbox[overflowing])) #TabsToolbar-customization-target > #new-tab-button {
+        display: none !important;
+      }
+    }
+  }
+}
+
+/* Optional outlines, independent icon opacity, and internal-page Search. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tab-close-button {
+    opacity: var(--uc-close-opacity) !important;
+  }
+  #tabs-newtab-button, #new-tab-button { opacity: var(--uc-plus-opacity) !important; }
+  #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:is([visuallyselected], :hover) .tab-background {
+    box-shadow: inset 0 0 0 var(--uc-tab-border-thickness)
+      color-mix(in srgb, currentColor var(--uc-tab-border-opacity), transparent) !important;
+  }
+  @container uc-address (max-width: 196px) {
+    #urlbar #identity-box.chromeUI { display: none !important; }
+  }
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr):has(#urlbar #identity-box.chromeUI[pageproxystate="valid"]) {
+      --uc-address-width: var(--uc-address-open-width, 420px) !important;
+      :is(#navigator-toolbox, #urlbar-container, #uc-search-width-toggle) {
+        transition-delay: var(--uc-internal-search-delay) !important;
       }
     }
   }
