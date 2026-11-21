@@ -1,6 +1,6 @@
-/* Firefox Single Row UI 1.6.0 — macOS horizontal toolbar.
+/* Firefox Single Row UI 1.7.0 — macOS horizontal toolbar.
  * Replace the entire old stylesheet; do not append.
- * Settings and tabs verified in isolated Firefox 160.0.
+ * Verified in an isolated Firefox 160.0 profile on macOS.
  * Live window/fullscreen behavior still requires verification on your Mac.
  * LTR, horizontal tabs. Native layout in Customize, vertical tabs and
  * windows narrower than 1000 CSS px. No forced toolbar visibility in video
@@ -8,9 +8,9 @@
  */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
   :root {
-    /* Customize here. Replace the whole stylesheet when updating. */
+    /* Customize here. Saved Firefox preferences take precedence. */
     --uc-corner-radius: 11px;
-    --uc-toolbar-height: 44px;             /* 40 compact / 44 normal / 48 roomy */
+    --uc-toolbar-height: 44px;
     --uc-bar-padding-y: 5px;
     --uc-tab-highlight-block-inset: 1px;
     --uc-tab-gap: 3px;
@@ -18,23 +18,44 @@
     --uc-tab-separator-opacity: .30;
     --uc-tab-separator-height: 60%;
     --uc-tab-separator-inset: 4px;
-    --uc-tab-highlight-inset: max(0px, calc((var(--uc-tab-gap) - var(--uc-tab-separator-width)) / 2));
-    --uc-search-default-open: 0;            /* 0 collapsed / 1 expanded while idle */
+    --uc-tab-highlight-inset: max( 0px, calc((var(--uc-tab-gap) - var(--uc-tab-separator-width, 1px)) / 2) );
+    --uc-search-default-open: 0;
     --uc-address-expanded-width: 420px;
     --uc-address-collapsed-width: 96px;
     --uc-search-animation-duration: 320ms;
-    --uc-internal-search-delay: 400ms;      /* Wait for internal-page startup */
     --uc-menu-row-height: 34px;
     --uc-actions-hover-delay: 300ms;
     --uc-actions-close-delay: 180ms;
     --uc-x-size: 19px;
-    --uc-x-radius: 5px;
+    --uc-x-radius: 8px;
     --uc-x-right-gap: 5px;
     --uc-x-icon-padding: 3px;
-    --uc-close-opacity: .55;
-    --uc-plus-opacity: .65;
+    --uc-close-opacity: 0.55;
+    --uc-plus-opacity: 0.65;
     --uc-tab-border-thickness: 1px;
-    --uc-tab-border-opacity: 0%;            /* Raise this to show tab outlines */
+    --uc-tab-border-opacity: 10%;
+    --uc-group-animation-duration: 240ms;
+    --uc-group-line-width: 2px;
+    --uc-group-join-radius: 6px;
+    --uc-group-colour-strength: 20%;
+    --uc-group-base-color: light-dark(#eeeeee, #242424);
+    --uc-group-tag-join-radius: 8px;
+    --uc-tab-title-fade-width: 12px;
+    --uc-internal-search-delay: 400ms;
+
+    
+     /* 0 = closed while idle; 1 = open */
+    
+     /* Set to 0ms to disable. */
+     /* Vertical thickness. Try 38px for a slimmer row. */
+     /* Security controls + search icon. */
+    
+    
+    
+    
+     /* Shared selected + hover inset. */
+    
+    
   }
 
   #uc-search-width-toggle { display: none !important; }
@@ -967,8 +988,12 @@
   }
 }
 
-/* Inset tab highlights and close-button behavior. */
+/* Horizontal toolbar refinements.
+ * Refines horizontal tabs without changing Search or the action menu. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {
+    
+  }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
       --uc-tab-highlight-end-inset: calc(var(--uc-tab-highlight-inset, 3px) + var(--uc-tab-separator-width, 1px));
@@ -1051,8 +1076,15 @@
   }
 }
 
-/* Coordinated heights and aligned menu rows. */
+/* Horizontal toolbar refinements.
+ * All height controls for the compact horizontal toolbar are here. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {
+                  /* Whole row: try 40, 44 or 48px. */
+                    /* Space outside Search and tab bar. */
+        /* Space inside the tab bar. */
+                 /* Hover-menu rows. */
+  }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
       --uc-field-height: clamp(28px, calc(var(--uc-row-height) - 2 * var(--uc-bar-padding-y)), calc(var(--uc-row-height) - 4px));
@@ -1151,7 +1183,7 @@
     }
   }
 }
-/* Keep compact titles still on hover. */
+/* Toolbar refinement. Keep compact titles still on hover. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
@@ -1185,9 +1217,19 @@
   }
 }
 
+:root {
+  
+  
+}
 
-/* Independent close-button size, corner and edge-gap controls. */
+/* Replace your FINAL TAB CLOSE BUTTON FIX block with this block. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {
+    
+    
+     /* Gap from the visible tab highlight, not the hitbox. */
+     /* Space around the X glyph inside its button. */
+  }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
     :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
       /* The extra ID deliberately outranks the older nested hover rules. */
@@ -1239,8 +1281,19 @@
     }
   }
 }
+:root {
+  
+  
+}
 
-/* Restore Firefox's two native + buttons:
+#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs
+.tabbrowser-tab:is([visuallyselected], :hover) .tab-background {
+  box-shadow: inset 0 0 0 var(--uc-tab-border-thickness)
+    color-mix(in srgb, currentColor var(--uc-tab-border-opacity), transparent)
+    !important;
+}
+
+/* Toolbar refinement. Restore Firefox's two native + buttons:
  * inline after the last tab, then fixed at the end during overflow. */
 @-moz-document url("chrome://browser/content/browser.xhtml") {
   @media (min-width: 1000px) and (not (forced-colors: active)) {
@@ -1262,25 +1315,459 @@
     }
   }
 }
+:root {
+  
+  
+}
 
-/* Optional outlines, independent icon opacity, and internal-page Search. */
+#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tab-close-button {
+  opacity: var(--uc-close-opacity) !important;
+}
+
+#tabs-newtab-button,
+#new-tab-button {
+  opacity: var(--uc-plus-opacity) !important;
+}
+
+
 @-moz-document url("chrome://browser/content/browser.xhtml") {
-  #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tab-close-button {
-    opacity: var(--uc-close-opacity) !important;
-  }
-  #tabs-newtab-button, #new-tab-button { opacity: var(--uc-plus-opacity) !important; }
-  #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:is([visuallyselected], :hover) .tab-background {
-    box-shadow: inset 0 0 0 var(--uc-tab-border-thickness)
-      color-mix(in srgb, currentColor var(--uc-tab-border-opacity), transparent) !important;
-  }
   @container uc-address (max-width: 196px) {
-    #urlbar #identity-box.chromeUI { display: none !important; }
+    #urlbar #identity-box.chromeUI {
+      display: none !important;
+    }
+  }
+}
+
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root:has(#urlbar #identity-box.chromeUI[pageproxystate="valid"]) {
+    --uc-address-width: var(--uc-address-open-width, 420px) !important;
+  }
+}
+
+:root:has(#urlbar #identity-box.chromeUI[pageproxystate="valid"])
+:is(#navigator-toolbox, #urlbar-container, #uc-search-width-toggle) {
+  transition-delay: var(--uc-internal-search-delay) !important;
+}
+
+/* Toolbar refinement. Native group behavior + matching labels. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      /* Override the compact stylesheet's 40px minimum and flexible width
+       * only where Firefox itself hides tabs in a collapsed group. */
+      #tabbrowser-tabs tab-group[collapsed] > .tabbrowser-tab:not([visuallyselected], [multiselected]),
+      #tabbrowser-tabs tab-group[collapsed][movingtabgroup] > .tabbrowser-tab[visuallyselected] {
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        flex: 0 0 0px !important;
+        padding: 0 !important;
+        margin-inline: 0 !important;
+        overflow: clip !important;
+        overflow-clip-margin: 0 !important;
+      }
+      #tabbrowser-tabs .tab-group-label-container {
+        display: flex !important;
+        align-items: center !important;
+        align-self: center !important;
+        height: var(--uc-tab-height) !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin-inline: var(--uc-tab-highlight-inset, 1px) var(--uc-tab-highlight-end-inset, 2px) !important;
+      }
+      #tabbrowser-tabs .tab-group-label-hover-highlight {
+        display: flex !important;
+        align-items: center !important;
+        height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        border-radius: var(--uc-corner-radius, 11px) !important;
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs .tab-group-label {
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        min-height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        min-width: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        margin: 0 !important;
+        padding: 0 10px !important;
+        line-height: normal !important;
+        border-radius: var(--uc-corner-radius, 11px) !important;
+      }
+      /* Keep Firefox's colored group line under its tabs, but don't use
+       * it to square off the label's lower-left corner. */
+      #tabbrowser-tabs .tab-group-label-container::after { content: none !important; }
+      #tabbrowser-tabs .tab-group-overflow-count {
+        box-sizing: border-box !important;
+        height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        min-width: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        padding-block: 0 !important;
+        line-height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        border-radius: var(--uc-corner-radius, 11px) !important;
+      }
+    }
+  }
+}
+
+/* Group baseline and native collapse behaviour. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {
+    
+    
+    --uc-group-tag-border-width: 1px;
+    --uc-group-accent-opacity: 75%;
   }
   @media (min-width: 1000px) and (not (forced-colors: active)) {
-    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr):has(#urlbar #identity-box.chromeUI[pageproxystate="valid"]) {
-      --uc-address-width: var(--uc-address-open-width, 420px) !important;
-      :is(#navigator-toolbox, #urlbar-container, #uc-search-width-toggle) {
-        transition-delay: var(--uc-internal-search-delay) !important;
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      #tabbrowser-tabs tab-group {
+        --uc-group-accent: color-mix(in srgb, var(--tab-group-line-color, var(--tab-group-color)) var(--uc-group-accent-opacity), transparent);
+      }
+      #tabbrowser-tabs tab-group > .tabbrowser-tab[fadein]:not([pinned]) {
+        transition: min-width var(--uc-group-animation-duration) ease,
+          max-width var(--uc-group-animation-duration) ease,
+          flex-grow var(--uc-group-animation-duration) ease,
+          flex-basis var(--uc-group-animation-duration) ease,
+          transform 1ms linear !important;
+      }
+      #tabbrowser-tabs[movingtab] tab-group > .tabbrowser-tab { transition: transform 1ms linear !important; }
+      /* Clear every side of the previous frame. A background strip inside
+       * each full tab hitbox joins its neighbor without the old 3px gaps. */
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tabbrowser-tab[fadein] > .tab-stack::before,
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-overflow-count-container::before {
+        content: "" !important;
+        position: absolute !important;
+        inset: auto 0 var(--uc-tab-effective-block-inset, 1px) !important;
+        height: var(--uc-group-line-width) !important;
+        box-sizing: border-box !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: var(--uc-group-accent) !important;
+        pointer-events: none !important;
+        transition: none !important;
+        z-index: 2;
+        visibility: visible;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tabbrowser-tab > .tab-stack,
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-overflow-count-container { position: relative !important; }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-line { display: none !important; }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-label-container::before,
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-label-container::after,
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-overflow-count-container::after { content: none !important; }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-label-container {
+        padding: 0 !important;
+        margin-inline: var(--uc-tab-highlight-inset, 1px) var(--uc-tab-highlight-end-inset, 2px) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label-hover-highlight,
+      #tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label {
+        height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        min-height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        border-radius: var(--uc-corner-radius, 11px) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label-hover-highlight {
+        padding: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label {
+        color: var(--toolbar-color, CanvasText) !important;
+        background: color-mix(in srgb, currentColor 8%, transparent) !important;
+        border: none !important;
+        box-shadow: inset 0 0 0 var(--uc-group-tag-border-width) var(--uc-group-accent) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group > .tab-group-overflow-count-container {
+        height: var(--uc-tab-height) !important;
+        align-items: center !important;
+        padding: 0 !important;
+        margin-inline: 0 !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-overflow-count {
+        color: var(--toolbar-color, CanvasText) !important;
+        background: transparent !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs tab-group[collapsed] > .tabbrowser-tab:not([visuallyselected], [multiselected]) > .tab-stack::before {
+        visibility: hidden;
+        transition: visibility 0s var(--uc-group-animation-duration) !important;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #tabbrowser-tabs tab-group > .tabbrowser-tab[fadein]:not([pinned]),
+        #tabbrowser-tabs#tabbrowser-tabs tab-group[collapsed] > .tabbrowser-tab > .tab-stack::before { transition: none !important; }
+      }
+    }
+  }
+}
+
+/* Group line and title fading. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {  }
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      /* The group line rises around the selected tab, open at its bottom. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::before {
+        inset: var(--uc-tab-effective-block-inset, 1px) 0 !important;
+        height: auto !important;
+        background: transparent !important;
+        border: var(--uc-group-line-width, 1px) solid var(--uc-group-accent) !important;
+        border-block-end: 0 !important;
+        border-radius: var(--uc-corner-radius, 11px) var(--uc-corner-radius, 11px) 0 0 !important;
+        visibility: visible !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] .tab-background {
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label {
+        background: transparent !important;
+      }
+      /* No group line remains when collapsed, including beneath an active
+       * member or the native hidden-tab counter. The tag keeps its outline. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group[collapsed] > .tabbrowser-tab > .tab-stack::before,
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group[collapsed] > .tab-group-overflow-count-container::before {
+        content: none !important;
+      }
+      /* Only fade the last few pixels of the available title area. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-label-container {
+        opacity: 1 !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
+        mask-image: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-label-container[textoverflow] {
+        mask-image: linear-gradient(to right, black 0%, black max(0px, calc(100% - var(--uc-tab-title-fade-width))), transparent 100%) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-label {
+        text-overflow: clip !important;
+      }
+      /* Native close-buttons mode can hide X on unselected roomy tabs. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs[closebuttons="activetab"] .tabbrowser-tab:not([pinned], [selected], [visuallyselected], :hover) .tab-content {
+        padding-inline-end: 8px !important;
+      }
+      @container uc-tab (min-width: 57px) and (max-width: 140px) {
+        #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned], :hover) .tab-content {
+          padding-inline-end: 8px !important;
+        }
+      }
+      @container uc-tab (max-width: 72px) {
+        #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
+          padding-inline-end: 8px !important;
+        }
+      }
+      @container uc-tab (max-width: 56px) {
+        #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs .tabbrowser-tab:not([pinned]) .tab-content {
+          padding-inline-end: 6px !important;
+        }
+      }
+    }
+  }
+}
+
+/* Group refinement. Connected group baseline, 2px strokes, no selected-tab fill. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {
+    
+    --uc-group-tag-border-width: 2px;
+  }
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      /* Include the tag's margins so its baseline joins the first tab. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-label-container::before {
+        content: "" !important;
+        position: absolute !important;
+        inset: auto calc(-1 * var(--uc-tab-highlight-end-inset, 2px)) 0 calc(-1 * var(--uc-tab-highlight-inset, 1px)) !important;
+        height: var(--uc-group-line-width) !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: var(--uc-group-accent) !important;
+        box-shadow: none !important;
+        pointer-events: none !important;
+        transition: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[fadein]:not([visuallyselected]) > .tab-stack::before,
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-overflow-count-container::before {
+        inset-block-end: 0 !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::before {
+        inset-block-end: 0 !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] .tab-background {
+        background: transparent !important;
+        background-image: none !important;
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group[collapsed] > .tab-group-label-container::before {
+        content: none !important;
+      }
+    }
+  }
+}
+
+/* Group refinement. Rounded group-line joins and a tag sharing the same baseline. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {  }
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      #tabbrowser-tabs tab-group {
+        --uc-group-curve-size: max(var(--uc-group-join-radius), calc(2 * var(--uc-group-line-width)));
+      }
+      /* The label outline and underline now end on exactly the same pixel. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label-hover-highlight,
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label {
+        height: var(--uc-tab-height) !important;
+        min-height: var(--uc-tab-height) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-label-container::before {
+        inset-inline-start: var(--uc-corner-radius, 11px) !important;
+      }
+      /* Stop the vertical sides above the baseline. The two quarter-circle
+       * strokes below join those sides to the adjacent horizontal line. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::before {
+        inset-inline: calc(var(--uc-group-curve-size) - var(--uc-group-line-width)) !important;
+        inset-block-end: var(--uc-group-curve-size) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::after {
+        content: "" !important;
+        position: absolute;
+        inset: auto 0 0;
+        height: var(--uc-group-curve-size);
+        background:
+          radial-gradient(circle at left top,
+            transparent calc(var(--uc-group-curve-size) - var(--uc-group-line-width)),
+            var(--uc-group-accent) calc(var(--uc-group-curve-size) - var(--uc-group-line-width)),
+            var(--uc-group-accent) var(--uc-group-curve-size),
+            transparent var(--uc-group-curve-size)) left bottom / var(--uc-group-curve-size) var(--uc-group-curve-size) no-repeat,
+          radial-gradient(circle at right top,
+            transparent calc(var(--uc-group-curve-size) - var(--uc-group-line-width)),
+            var(--uc-group-accent) calc(var(--uc-group-curve-size) - var(--uc-group-line-width)),
+            var(--uc-group-accent) var(--uc-group-curve-size),
+            transparent var(--uc-group-curve-size)) right bottom / var(--uc-group-curve-size) var(--uc-group-curve-size) no-repeat;
+        pointer-events: none;
+        z-index: 2;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group[collapsed] > .tabbrowser-tab > .tab-stack::after { content: none !important; }
+    }
+  }
+}
+
+/* Filled group tags; unfilled active tabs with a rounded 2px contour. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {
+    
+    
+    
+    
+  }
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      #tabbrowser-tabs tab-group {
+        /* An opaque blend avoids darker seams where fill and line overlap. */
+        --uc-group-surface: color-mix(in srgb, var(--tab-group-line-color, var(--tab-group-color)) var(--uc-group-colour-strength), var(--uc-group-base-color));
+        --uc-group-accent: var(--uc-group-surface);
+        --uc-group-curve-size: max(var(--uc-group-join-radius), calc(2 * var(--uc-group-line-width)));
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label-hover-highlight,
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label {
+        height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        min-height: var(--uc-tab-highlight-height, var(--uc-tab-height)) !important;
+        border-radius: var(--uc-corner-radius, 11px) !important;
+        border: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group .tab-group-label {
+        color: var(--toolbar-color, CanvasText) !important;
+        background: var(--uc-group-surface) !important;
+      }
+      /* The tag and idle tabs share one baseline, inside the tab hitbox. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-label-container::before {
+        inset: auto calc(-1 * var(--uc-tab-highlight-end-inset, 2px)) var(--uc-tab-effective-block-inset, 1px) var(--uc-corner-radius, 11px) !important;
+        height: var(--uc-group-line-width) !important;
+        background: var(--uc-group-surface) !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[fadein]:not([visuallyselected]) > .tab-stack::before,
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-overflow-count-container::before {
+        inset-block-end: var(--uc-tab-effective-block-inset, 1px) !important;
+        height: var(--uc-group-line-width) !important;
+        background: var(--uc-group-surface) !important;
+      }
+      /* Rise over the selected tab, then return through two concave joins.
+       * Only the stroke is coloured; the entire interior stays transparent. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::before {
+        content: "" !important;
+        inset: var(--uc-tab-effective-block-inset, 1px) calc(var(--uc-group-curve-size) - var(--uc-group-line-width)) calc(var(--uc-group-curve-size) + var(--uc-tab-effective-block-inset, 1px)) !important;
+        height: auto !important;
+        border: var(--uc-group-line-width) solid var(--uc-group-surface) !important;
+        border-block-end: 0 !important;
+        border-radius: var(--uc-corner-radius, 11px) var(--uc-corner-radius, 11px) 0 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        visibility: visible !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::after {
+        content: "" !important;
+        position: absolute !important;
+        inset: auto 0 var(--uc-tab-effective-block-inset, 1px) !important;
+        height: var(--uc-group-curve-size) !important;
+        background:
+          radial-gradient(circle at left top,
+            transparent calc(var(--uc-group-curve-size) - var(--uc-group-line-width) - .25px),
+            var(--uc-group-surface) calc(var(--uc-group-curve-size) - var(--uc-group-line-width) + .25px),
+            var(--uc-group-surface) calc(var(--uc-group-curve-size) - .25px),
+            transparent calc(var(--uc-group-curve-size) + .25px)) left bottom / var(--uc-group-curve-size) 100% no-repeat,
+          radial-gradient(circle at right top,
+            transparent calc(var(--uc-group-curve-size) - var(--uc-group-line-width) - .25px),
+            var(--uc-group-surface) calc(var(--uc-group-curve-size) - var(--uc-group-line-width) + .25px),
+            var(--uc-group-surface) calc(var(--uc-group-curve-size) - .25px),
+            transparent calc(var(--uc-group-curve-size) + .25px)) right bottom / var(--uc-group-curve-size) 100% no-repeat !important;
+        pointer-events: none !important;
+        z-index: 0 !important;
+      }
+      /* Paint the contour behind the icon, title and close button. */
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] > .tab-stack::before { z-index: 0 !important; }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tabbrowser-tab[visuallyselected] .tab-content { position: relative !important; z-index: 1 !important; }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group > .tabbrowser-tab[visuallyselected] .tab-background {
+        background: transparent !important;
+        border: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group > .tabbrowser-tab:hover:not([visuallyselected]) .tab-background {
+        background: var(--uc-group-surface) !important;
+        border: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+}
+
+/* Outward bottom-right curve connecting an expanded group tag to its line. */
+@-moz-document url("chrome://browser/content/browser.xhtml") {
+  :root {  }
+  @media (min-width: 1000px) and (not (forced-colors: active)) {
+    :root:not([customizing], [chromehidden], [inDOMFullscreen]):not(:has(#tabbrowser-tabs[orient="vertical"])):dir(ltr) {
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-label-container {
+        position: relative !important;
+        overflow: visible !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) .tab-group-label-hover-highlight,
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) .tab-group-label {
+        border-end-end-radius: 0 !important;
+      }
+      #tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs#tabbrowser-tabs tab-group:not([collapsed]) > .tab-group-label-container::after {
+        content: "" !important;
+        position: absolute !important;
+        inset: auto calc(-1 * var(--uc-group-tag-join-radius)) var(--uc-tab-effective-block-inset, 1px) auto !important;
+        width: var(--uc-group-tag-join-radius) !important;
+        height: var(--uc-group-tag-join-radius) !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: radial-gradient(circle at right top,
+          transparent calc(var(--uc-group-tag-join-radius) - .25px),
+          var(--uc-group-surface) calc(var(--uc-group-tag-join-radius) + .25px)) !important;
+        pointer-events: none !important;
       }
     }
   }
