@@ -1,33 +1,39 @@
-# Screenshot gallery
+# Product images
 
-These are actual Firefox UI captures, not AI-generated mockups. They were made in a disposable headless Firefox 158.0.1 profile using the packaged CSS, neutral demo tabs and built-in generic icons. Home, History and Print were added through Firefox's normal customization API for the action-list example.
+The current gallery was captured with the packaged 1.7.0 CSS in an isolated headless Firefox 160.0 profile on macOS. All tabs have neutral demo labels. Search uses example.com; the tools menu is shown over a blank page. A neutral dark background was applied only to the capture window to keep the group line visible. It is not an included Firefox theme, and the toolbar geometry was not altered for capture.
 
-No personal browsing history, account photograph, location, uploaded user screenshots or real profile files were included. The browser automation indicator was hidden for capture; it is not part of an ordinary user session. Native macOS traffic lights are not rendered in headless screenshots. Example colors come from the capture environment, not an included theme.
+No personal browsing history, account photograph, location, user screenshots or real profile files are included. The automation indicator was hidden for capture. Headless Firefox does not render native macOS traffic lights. A temporary location permission for example.com was used to expose the native permission control, then removed from the disposable profile; no location was requested or read.
 
-## Normal toolbar
+## Search and native controls
 
-![Navigation, Search, grouped tabs, hover handle, and account icon](../assets/screenshots/toolbar.png)
+![Collapsed Search with native controls](../assets/screenshots/squared-search-controls.png)
 
-## Vertical hover list
+![Expanded Search](../assets/screenshots/squared-search-expanded.png)
 
-![Downloads, Extensions, Home, History and Print as a vertical action list](../assets/screenshots/hover-actions.png)
+## Tab groups
 
-## Compact tabs with overflow
+The group tag has a muted fill and an outward bottom-right curve. A continuous 2px line rises over the active tab, whose interior remains unfilled.
 
-![Favicon-only tabs and native scrolling](../assets/screenshots/compact-tabs.png)
+![Expanded group and unfilled active-tab outline](../assets/screenshots/tab-groups-expanded.png)
 
-To add your own screenshots, use a clean browser window, remove personal details, save the image in `assets/screenshots/`, and add a relative Markdown image link to the README. Native screenshot tools can capture only the toolbar to avoid including page content.
+Collapsed groups have no underline or outward wedge. Firefox can keep the active member visible.
 
-The README features the softly squared 11px style: `radius-11.png`, `squared-hover-actions.png` and `squared-many-tabs.png`. `rounded-comparison.png` shows the same toolbar at 16px. These were captured in the disposable Firefox profile with a saved radius preference, then the preference was reset. This presentation change does not change the packaged rounded default. Other original captures use the rounded 16px default. `radius-4.png` and `radius-16.png` show the same toolbar at two saved radius settings. Native macOS context menus are not rendered in headless screenshot output; these images demonstrate the changed corners rather than the menu itself.
+![Collapsed groups](../assets/screenshots/tab-groups-collapsed.png)
 
-The README search examples also use the featured 11px style. `squared-search-expanded.png` shows the native field focused and expanded; `squared-search-controls.png` shows native site-information, permission and search controls together. A location permission was added only to the disposable example.com test profile to show the permission indicator, then removed after capture.
+## Tools palette
 
-## README presentation board
+![Aligned tools palette](../assets/screenshots/squared-hover-actions.png)
 
-`assets/screenshots/showcase.png` arranges the real toolbar captures on a decorative backdrop with blank window canvases, labels and shadows. The toolbar artwork is unchanged. The editable layout is in `assets/screenshots/showcase.svg`. This board is a presentation composition, not a full-window browser screenshot.
+## Compact tabs and scrolling
 
-## Latest flat-fill toolbar
+![Compact overflowing tabs](../assets/screenshots/squared-many-tabs.png)
 
-The 1.5.0 CSS-only preview shows the flat fills and separators clear of the selected tab. The main presentation board above uses earlier captures for style comparison.
+## Corner options
 
-![Flat translucent toolbar with faint inactive-tab separators](../assets/screenshots/flat-tab-separators.png)
+The default is 11px. The comparison uses the optional saved 16px radius; the gallery also includes 4px and 16px captures. Saved radius preferences were reset after capture.
+
+![Rounder corners](../assets/screenshots/rounded-comparison.png)
+
+## Presentation board
+
+`assets/screenshots/showcase.png` combines these actual toolbar captures with labels, shadows and blank decorative window canvases. It is a product presentation, not a full-window screenshot. `showcase.svg` contains the editable composition. Existing image filenames are refreshed with the current release so older links remain usable.

@@ -15,6 +15,8 @@ The original 1.5.0 layout was checked in isolated headless Firefox 158.0.1. The 
 - Saved Search choice, idempotent helper loading, new-window installation and synchronization. Automatic startup and persistence were exercised in a disposable Firefox application copy, without modifying the user’s installed app.
 - Internal-page automatic expansion and frame timing. Settings startup can block the UI longer than a width animation; the configurable delay is a mitigation, not a guarantee of smooth frames on every machine.
 
+The 1.7.0 group refinements were checked in the same isolated Firefox 160.0 environment: multiple intermediate widths during collapse, filled tags with distinct blue/purple/cyan blends, transparent active-tab interiors, 2px top outlines, rounded line joins, the 8px outward tag curve, and no group decorations after collapse. Tab titles fade only when they overflow. Current product images were recaptured from the release CSS.
+
 ## Limits
 
 Real macOS fullscreen/Spaces transitions, OS drag-and-drop and every installed third-party extension have not been exhaustively verified. Native popup anchoring can be clamped by screen edges. Main-thread stalls can skip layout animation frames. The palette positions up to 24 ordinary widgets; keep it short enough to fit your screen. Specialized composite widgets may retain their own presentation.

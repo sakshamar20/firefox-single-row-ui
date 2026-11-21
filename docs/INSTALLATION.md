@@ -25,14 +25,30 @@ The settings are together at the top of `userChrome.css`. Edit, save, then fully
 | `--uc-tab-gap` | Total gap between neighboring highlights; 3px by default. |
 | `--uc-menu-row-height` | Tools-palette row height. Icons and labels share a vertical center. |
 | `--uc-x-right-gap` | Space between X and the visible tab highlight’s right edge. |
-| `--uc-x-radius`, `--uc-x-size`, `--uc-x-icon-padding` | Close-button corners, size and glyph padding. |
+| `--uc-x-radius`, `--uc-x-size`, `--uc-x-icon-padding` | Close-button corners (8px), size (19px) and glyph padding (3px). |
 | `--uc-close-opacity`, `--uc-plus-opacity` | 0 is transparent; 1 is fully visible. This also fades button backgrounds. |
-| `--uc-tab-border-thickness`, `--uc-tab-border-opacity` | Selected/hover outlines; opacity is 0% by default, 100% is solid. |
+| `--uc-tab-border-thickness`, `--uc-tab-border-opacity` | Selected/hover outlines; opacity is 10% by default, 100% is solid. |
 | `--uc-search-default-open` | 0 collapses Search while idle; 1 keeps it expanded. A saved switch choice takes precedence. |
 | `--uc-address-expanded-width` | Expanded Search width, limited to leave room for the toolbar. |
 | `--uc-search-animation-duration` | Search motion duration; 0ms disables it. Reduced motion is respected. |
 | `--uc-internal-search-delay` | Wait before internal-page expansion; 400ms helps avoid losing the animation while Settings initializes. This cannot prevent all startup stalls. |
 | `--uc-actions-hover-delay` | Dwell before the tools palette opens; 300ms by default. |
+
+## Tab groups
+
+Click a group tag to collapse or expand its tabs. Tags use a muted fill; the active tab stays unfilled, with the group line rising over its rounded top. An expanded tag has a small outward curve at its bottom-right corner. Collapsed groups have no underline or outward wedge. Firefox may keep the active member visible when its group is collapsed.
+
+| Setting | Default and purpose |
+| --- | --- |
+| `--uc-group-colour-strength` | `20%`: increase for a stronger group colour, lower for a softer blend. |
+| `--uc-group-base-color` | `light-dark(#eeeeee, #242424)`: neutral background blended with Firefox’s group colour. |
+| `--uc-group-line-width` | `2px`: thickness of the continuous line and active-tab outline. |
+| `--uc-group-join-radius` | `6px`: curves where the active tab rejoins the bottom line. |
+| `--uc-group-tag-join-radius` | `8px`: outward curve on the expanded tag. |
+| `--uc-group-animation-duration` | `240ms`: collapse and expand duration. |
+| `--uc-tab-title-fade-width` | `12px`: fade length at the end of overflowing titles. |
+
+The tag fill and line use one shared colour blend. Changing the strength adjusts both together. Reduced motion disables the group width animation.
 
 Internal Firefox pages with the Firefox identity pill automatically expand Search. Normal websites follow your usual Search setting. Native connection, tracking, permission and notification controls remain available; Firefox determines which apply to the page. CSS alone uses a conservative collapsed width. The optional helper measures the actual visible controls and distinguishes automatic new-tab focus from an intentional Search command.
 
