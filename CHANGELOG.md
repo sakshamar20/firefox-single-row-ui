@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.7.0
+
+- Restore native group collapse with smooth width animation and reduced-motion support.
+- Add muted filled group tags, a continuous 2px group line and a rounded unfilled active-tab outline. The tag’s bottom-right corner curves outward into the line.
+- Hide group lines and outward corners while collapsed, including beneath a retained active member.
+- Keep group fills and strokes on one shared colour blend to avoid dark overlapping seams.
+- Fade overflowing tab titles only at the end; let hidden close buttons return their space to the title.
+- Keep group colour, line width, corner radii and animation controls with the other settings at the top of the stylesheet.
+- Refresh product screenshots and the presentation board using the current CSS and neutral demo tabs in Firefox 160.0.
+
 ## 1.6.0
 
 - Refine pinned tabs, matching inset highlights and separator spacing; keep separators clear of selected and hovered tabs.

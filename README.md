@@ -2,7 +2,7 @@
 
 <p align="center">A quieter Firefox for people who like to keep everything minimal.<br>One compact toolbar, more room for the web.</p>
 
-![Firefox Single Row UI presentation: softly squared controls, expanded Search, and a rounder alternative](assets/screenshots/showcase.png)
+![Firefox Single Row UI presentation: compact controls, expanded Search, and smoothly connected tab groups](assets/screenshots/showcase.png)
 
 -  Your tabs and everyday controls, together in one row.
 -  Search when you need it. Extra space when you don’t.
@@ -19,6 +19,14 @@
 **Tools tucked away until you need them.**
 
 ![Softly squared toolbar with the hover menu open](assets/screenshots/squared-hover-actions.png)
+
+**Groups that stay together.**
+
+Muted tags, a continuous line and a rounded outline around the active tab. Collapse a group when you need more room.
+
+![Expanded tab group with a filled tag, outward corner and unfilled active tab](assets/screenshots/tab-groups-expanded.png)
+
+![Collapsed groups with no leftover group lines](assets/screenshots/tab-groups-collapsed.png)
 
 **More tabs, the same tidy row.**
 
